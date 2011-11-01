@@ -4,5 +4,9 @@
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/gwtupload-0.6.3-compat.jar" sourcepath="/home/michael/.m2/repository/com/googlecode/gwtupload/gwtupload/0.6.3-compat/gwtupload-0.6.3-compat-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jnetpcap.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

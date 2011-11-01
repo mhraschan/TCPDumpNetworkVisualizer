@@ -5,7 +5,39 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
+  <context-param>
+    <!-- max size of the upload request -->
+    <param-name>maxSize</param-name>
+    <param-value>3145728</param-value>
+  </context-param>
+  <context-param>
+    <!-- Useful in development mode to slow down the uploads in fast networks.
+         Put the number of milliseconds to sleep in each block received in the server.
+         false or 0, means don't use slow uploads  -->
+    <param-name>slowUploads</param-name>
+    <param-value>0</param-value>
+  </context-param>
+
+
+
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <servlet-class>com.uh.nwvz.server.TCPDumpUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>*.gupld</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+    <servlet-name>packetTransmissionServiceImpl</servlet-name>
+    <servlet-class>com.uh.nwvz.server.PacketTransmissionServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>packetTransmissionServiceImpl</servlet-name>
+    <url-pattern>packetTransmission</url-pattern>
+  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>

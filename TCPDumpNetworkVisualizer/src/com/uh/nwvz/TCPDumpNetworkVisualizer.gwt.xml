@@ -12,6 +12,10 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
+  <inherits name="gwtupload.GWTUpload"/>
+  <!-- Load dinamically predefined styles in the library when the application starts -->
+  <stylesheet src="Upload.css"/>
+  
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.uh.nwvz.client.TCPDumpNetworkVisualizer'/>
