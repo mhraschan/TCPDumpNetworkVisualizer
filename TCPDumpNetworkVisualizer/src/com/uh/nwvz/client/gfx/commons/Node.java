@@ -3,14 +3,17 @@ package com.uh.nwvz.client.gfx.commons;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.LineCap;
 import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
+import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.FillStrokeStyle;
+import com.google.gwt.canvas.dom.client.TextMetrics;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 
 public class Node implements GfxObject {
 	// basic data
 	private Vector center;
 	private double radius;
+	private String text;
 	
 	// color data
 	private CssColor colorNormal;
@@ -21,9 +24,10 @@ public class Node implements GfxObject {
 	boolean isMouseDown = false;
 	boolean isMouseOver = false;
 	
-	public Node(Vector center, double radius, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
+	public Node(Vector center, double radius, String text, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		this.center = center;
 		this.radius = radius;
+		this.text = text;
 		this.colorNormal = colorNormal;
 		this.colorMouseOver = colorMouseOver;
 		this.colorMouseDown = colorMouseDown;
@@ -44,6 +48,7 @@ public class Node implements GfxObject {
 	@Override
 	public void draw(Context2d context) 
 	{
+		context.setFont("bold 1em Arial");
 		context.setLineJoin(LineJoin.ROUND);
 		context.setLineCap(LineCap.ROUND);
 		if (isMouseDown) {
@@ -62,6 +67,15 @@ public class Node implements GfxObject {
 		context.closePath();
 		context.fill();
 		context.stroke();
+		context.setFillStyle(CssColor.make("black"));
+		context.setTextAlign(TextAlign.CENTER);
+		TextMetrics metrics = context.measureText(text);
+		if (metrics.getWidth() < 2*radius) 
+			context.fillText(text, center.getX(), center.getY() + 3 , 2*radius); 
+		else if (this.isMouseOver) {
+			context.fillText(text, center.getX()+2*radius, center.getY()-radius);
+		}
+			
 	}
 
 	@Override

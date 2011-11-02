@@ -45,13 +45,15 @@ public class TCPDumpNetworkVisualizer implements EntryPoint {
 		
 		// create Graphing Canvas
 		cvGraph = Canvas.createIfSupported();
+		cvGraph.setCoordinateSpaceHeight(500);
+		cvGraph.setCoordinateSpaceWidth(1000);
 		
 		// initialize event manager
 		CanvasEventManager.initCanvasEventManager(cvGraph);
 		
 		// initialize graphics manager
 		gfxManager = new GfxManager(cvGraph);
-		
+	
 		RootPanel.get("graph_canvas").add(cvGraph);
 		
 	    final Timer timer = new Timer() {
