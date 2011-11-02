@@ -27,6 +27,23 @@ public class Association implements GfxObject {
 		context.stroke();
 		
 	}
+
+	@Override
+	public boolean isInsideObject(Vector point) { 
+		return false;
+	}
+
+	@Override
+	public void onMouseClick() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMouseOver() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 
