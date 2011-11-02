@@ -16,12 +16,13 @@ import org.jnetpcap.Pcap;
 
 import com.uh.nwvz.server.common.Commons;
 import com.uh.nwvz.server.pcap.PacketHandler;
+import com.uh.nwvz.server.pcap.SimplePacketConverter;
 import com.uh.nwvz.shared.PcapException;
 
 public class TCPDumpUploadServlet extends UploadAction {
 
 	private static final long serialVersionUID = -511885767884970614L;
-	
+
 	@Override
 	public String executeAction(HttpServletRequest request,
 			List<FileItem> sessionFiles) throws UploadActionException {
@@ -31,21 +32,29 @@ public class TCPDumpUploadServlet extends UploadAction {
 				try {
 					File file = File.createTempFile("upload-", ".bin");
 					item.write(file);
-					
+
 					StringBuilder errbuf = new StringBuilder();
-					
-					final Pcap pcap = Pcap.openOffline(file.getAbsolutePath(), errbuf);
+
+					final Pcap pcap = Pcap.openOffline(file.getAbsolutePath(),
+							errbuf);
 					if (pcap == null) {
 						throw new PcapException("Failed to open uploaded file!");
 					} else {
 						PacketHandler packetHandler = new PacketHandler();
-						
+
 						pcap.loop(Pcap.LOOP_INFINITE, packetHandler, errbuf);
-						
+
 						HttpSession session = request.getSession();
-						session.setAttribute(Commons.SESSION_PACKET_LIST, packetHandler.getPackets());
-						
-						response = "Total packet count: " + packetHandler.getPacketCount();
+						session.setAttribute(Commons.SESSION_PACKET_LIST,
+								packetHandler.getPackets());
+						session.setAttribute(
+								Commons.SESSION_SIMPLE_PACKET_LIST,
+								SimplePacketConverter.convert(packetHandler
+										.getPackets()));
+						session.setAttribute(Commons.SESSION_PACKETS_SENT, 0);
+
+						response = "Total packet count: "
+								+ packetHandler.getPacketCount();
 					}
 				} catch (Exception e) {
 					throw new UploadActionException(e);
@@ -57,7 +66,7 @@ public class TCPDumpUploadServlet extends UploadAction {
 
 		return response;
 	}
-	
+
 	/**
 	 * Get the content of an uploaded file.
 	 */
