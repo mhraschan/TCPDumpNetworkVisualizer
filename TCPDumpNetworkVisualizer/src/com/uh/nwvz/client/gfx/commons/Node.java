@@ -1,22 +1,36 @@
 package com.uh.nwvz.client.gfx.commons;
 
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.Context2d.LineCap;
+import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.FillStrokeStyle;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 
 public class Node implements GfxObject {
-	
+	// basic data
 	private Vector center;
-	private CssColor color;
 	private double radius;
-	boolean stroke = false;
 	
-	public Node(Vector center, double radius, CssColor color) {
+	// color data
+	private CssColor colorNormal;
+	private CssColor colorMouseOver;
+	private CssColor colorMouseDown;
+	
+	// event handling data
+	boolean isMouseDown = false;
+	boolean isMouseOver = false;
+	
+	public Node(Vector center, double radius, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		this.center = center;
 		this.radius = radius;
-		this.color = color;
+		this.colorNormal = colorNormal;
+		this.colorMouseOver = colorMouseOver;
+		this.colorMouseDown = colorMouseDown;
 		CanvasEventManager mgr = CanvasEventManager.getCanvasEventManager();
-		mgr.addClickListener(this);
+		mgr.addMouseDownListener(this);
+		mgr.addMouseUpListener(this);
+		mgr.addMouseOverListener(this);
 	}
 	
 	public Vector getCenter() {
@@ -30,13 +44,24 @@ public class Node implements GfxObject {
 	@Override
 	public void draw(Context2d context) 
 	{
-		context.setFillStyle(color);
+		context.setLineJoin(LineJoin.ROUND);
+		context.setLineCap(LineCap.ROUND);
+		if (isMouseDown) {
+			context.setFillStyle(colorMouseDown);
+			context.setLineWidth(1.2);
+		}
+		else if (isMouseOver) {
+			context.setFillStyle(colorMouseOver);
+			context.setLineWidth(1.5);
+		} else {
+			context.setFillStyle(colorNormal);
+			context.setLineWidth(1);
+		}
 		context.beginPath();
 		context.arc(center.getX(), center.getY(), radius, 0, 2.0 * Math.PI);
 		context.closePath();
 		context.fill();
-		if (stroke)
-			context.stroke();
+		context.stroke();
 	}
 
 	@Override
@@ -46,14 +71,23 @@ public class Node implements GfxObject {
 	}
 
 	@Override
-	public void onMouseClick() {
-		stroke = !stroke;
-		
+	public void onMouseOver() {
+		this.isMouseOver = true;
 	}
 
 	@Override
-	public void onMouseOver() {
-		// TODO Auto-generated method stub
-		
+	public void onMouseOut() {
+		this.isMouseOver = false;
+		this.isMouseDown = false;
+	}
+
+	@Override
+	public void onMouseDown() {
+		this.isMouseDown = true;
+	}
+
+	@Override
+	public void onMouseUp() {
+		this.isMouseDown = false;
 	}
 }

@@ -7,8 +7,12 @@ public interface GfxObject {
 	void draw(Context2d context);
 	
 	boolean isInsideObject(Vector point);
-	
-	void onMouseClick();
-	
+		
 	void onMouseOver();
+	
+	void onMouseOut();
+	
+	void onMouseDown();
+	
+	void onMouseUp();
 }

@@ -17,16 +17,15 @@ import com.uh.nwvz.client.gfx.commons.Vector;
 public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, MouseUpHandler {	
 	private static CanvasEventManager mgr = null; // singleton
 	
-	private Canvas canvas = null;
-	
 	private Vector currentMousePosition = new Vector(0,0);
-	private boolean mouseDown = false;
 	
-	private List<GfxObject> clickListeners = new ArrayList<GfxObject>();
+	private List<GfxObject> mouseDownListeners = new ArrayList<GfxObject>();
+	private List<GfxObject> mouseUpListeners = new ArrayList<GfxObject>();
 	private List<GfxObject> mouseOverListeners = new ArrayList<GfxObject>();
 	
+	private GfxObject lastMouseOverObject = null;
+	
 	private CanvasEventManager(Canvas canvas) {
-		this.canvas = canvas;
 		canvas.addMouseMoveHandler(this);
 		canvas.addMouseDownHandler(this);
 		canvas.addMouseUpHandler(this);
@@ -42,8 +41,12 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 		}
 	}
 	
-	public void addClickListener(GfxObject gfxObject) {
-		this.clickListeners.add(gfxObject);		
+	public void addMouseDownListener(GfxObject gfxObject) {
+		this.mouseDownListeners.add(gfxObject);		
+	}
+	
+	public void addMouseUpListener(GfxObject gfxObject) {
+		this.mouseUpListeners.add(gfxObject);
 	}
 	
 	public void addMouseOverListener(GfxObject gfxObject) {
@@ -63,18 +66,18 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 
 	@Override
 	public void onMouseUp(MouseUpEvent event) {
-		if (this.mouseDown) { // click event
-			GfxObject gfxObject = findObjectAtCurrentPosition(clickListeners);
-			if (gfxObject != null) {
-				gfxObject.onMouseClick();
-			}
+		GfxObject gfxObject = findObjectAtCurrentPosition(mouseUpListeners);
+		if (gfxObject != null) {
+			gfxObject.onMouseUp();
 		}
-		
 	}
 
 	@Override
 	public void onMouseDown(MouseDownEvent event) {
-		this.mouseDown = true;
+		GfxObject gfxObject = findObjectAtCurrentPosition(mouseDownListeners);
+		if (gfxObject != null) {
+			gfxObject.onMouseDown();
+		}
 		
 	}
 
@@ -82,12 +85,18 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 	public void onMouseMove(MouseMoveEvent event) {
 		currentMousePosition.setX(event.getX());
 		currentMousePosition.setY(event.getY());
-		this.mouseDown = false;
 		
 		GfxObject gfxObject = findObjectAtCurrentPosition(mouseOverListeners);
 		if (gfxObject != null) {
 			gfxObject.onMouseOver();
 		}
+		
+		if (lastMouseOverObject != gfxObject) {
+			if (lastMouseOverObject != null)
+				lastMouseOverObject.onMouseOut();
+		}
+		
+		lastMouseOverObject = gfxObject;
 	}
 	
 	
