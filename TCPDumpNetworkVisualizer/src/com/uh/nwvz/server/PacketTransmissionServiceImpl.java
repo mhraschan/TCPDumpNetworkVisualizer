@@ -1,7 +1,6 @@
 package com.uh.nwvz.server;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,11 +14,6 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 
 	private static final long serialVersionUID = -7400779360249636037L;
 
-	@Override
-	public List<SimplePacketDTO> getPackets() {
-		return null;
-	}
-
 	private HttpSession getSession() {
 		return this.getThreadLocalRequest().getSession(false);
 	}
@@ -30,7 +24,7 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 		HttpSession session = getSession();
 
 		if (session != null) {
-			return ((Map<Integer, SimplePacketDTO>) session
+			return ((List<SimplePacketDTO>) session
 					.getAttribute(Commons.SESSION_SIMPLE_PACKET_LIST)).size();
 		}
 		return null;
@@ -38,28 +32,34 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<Integer, SimplePacketDTO> getAllPackets() {
-		HttpSession session = getSession();
-
-		if (session != null) {
-			return ((Map<Integer, SimplePacketDTO>) session
-					.getAttribute(Commons.SESSION_SIMPLE_PACKET_LIST));
-		}
-		return null;
-	}
-
-	@Override
-	public Map<Integer, SimplePacketDTO> getNextPackets() {
+	public SimplePacketDTO[] getNextPackets() {
 		HttpSession session = getSession();
 
 		if (session != null) {
 			Integer sentPackets = (Integer) session
 					.getAttribute(Commons.SESSION_PACKETS_SENT);
-			
-			//TODO: sent next packets
+
+			List<SimplePacketDTO> packets = ((List<SimplePacketDTO>) session
+					.getAttribute(Commons.SESSION_SIMPLE_PACKET_LIST));
+
+			if (sentPackets < packets.size()) {
+				int fromPackets = sentPackets;
+				int toPackets = sentPackets + Commons.PACKET_TRANSFER_SIZE;
+				
+				if (toPackets > packets.size())
+					toPackets = packets.size();
+
+				session.setAttribute(Commons.SESSION_PACKETS_SENT, toPackets);
+
+				List<SimplePacketDTO> retList = packets.subList(fromPackets,
+						toPackets);
+				SimplePacketDTO[] retArray = new SimplePacketDTO[Commons.PACKET_TRANSFER_SIZE];
+				retArray = retList.toArray(retArray);
+
+				return retArray;
+			}
 		}
 
 		return null;
 	}
-
 }

@@ -8,5 +8,5 @@ public class Commons {
 	
 	public final static String SESSION_PACKETS_SENT = "SentPackets";
 	
-	public final static int PACKET_TRANSFER_SIZE = 512;
+	public final static int PACKET_TRANSFER_SIZE = 128;
 }

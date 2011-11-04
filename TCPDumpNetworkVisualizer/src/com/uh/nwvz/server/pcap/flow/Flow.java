@@ -40,5 +40,9 @@ public class Flow {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public void addPacket(Packet packet) {
+		packets.add(packet);
+	}
 
 }

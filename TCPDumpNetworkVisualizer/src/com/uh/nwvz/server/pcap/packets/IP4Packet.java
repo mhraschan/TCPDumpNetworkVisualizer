@@ -105,6 +105,8 @@ public class IP4Packet implements GeneralPacket {
 	@Override
 	public void fillSimplePacket(SimplePacketDTO simplePacket) {
 		simplePacket.setType(SimplePacketType.IP4);
+		simplePacket.setDestination(destination);
+		simplePacket.setSource(source);
 		
 		if (hasSubPacket())
 			subPacket.fillSimplePacket(simplePacket);

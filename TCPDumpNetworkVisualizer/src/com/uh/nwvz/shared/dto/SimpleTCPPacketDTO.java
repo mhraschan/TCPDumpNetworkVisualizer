@@ -12,6 +12,10 @@ public class SimpleTCPPacketDTO implements Serializable {
 
 	private SimpleHttpPacketDTO httpPacket;
 
+	public SimpleTCPPacketDTO() {
+		super();
+	}
+
 	public SimpleTCPPacketDTO(int srcPort, int dstPort) {
 		super();
 		this.srcPort = srcPort;

@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jnetpcap.packet.JFlow;
 import org.jnetpcap.packet.JFlowKey;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.lan.Ethernet;
-import org.jnetpcap.protocol.network.Arp;
 import org.jnetpcap.protocol.network.Icmp;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.network.Ip6;
-import org.jnetpcap.protocol.network.Rip1;
 import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.protocol.tcpip.Tcp;
 import org.jnetpcap.protocol.tcpip.Udp;
@@ -49,13 +46,9 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
 	private final Http http = new Http();
 
-	private final Arp arp = new Arp();
-
 	private final Icmp icmp = new Icmp();
 
 	private final Udp udp = new Udp();
-
-	private final Rip1 rip1 = new Rip1();
 
 	private Map<Integer, Packet> packets = new TreeMap<Integer, Packet>();
 
@@ -94,7 +87,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 			packet.getHeader(ethernet);
 
 			EthernetPacket ethernetPacket = new EthernetPacket(
-					ethernet.checksum(), ethernet.destination(),
+					0, ethernet.destination(),
 					ethernet.source(), ethernet.type());
 
 			iPacket.setHeader(PacketHeader.ETHERNET);
@@ -103,7 +96,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 			if (packet.hasHeader(Ip4.ID)) {
 				packet.getHeader(ip4);
 
-				IP4Packet ip4Packet = new IP4Packet(ip4.checksum(),
+				IP4Packet ip4Packet = new IP4Packet(0,
 						ip4.destination(), ip4.source(), ip4.flags(),
 						ip4.version(), ip4.type());
 
@@ -133,7 +126,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 				} else if (packet.hasHeader(Udp.ID)) {
 					packet.getHeader(udp);
 
-					UdpPacket udpPacket = new UdpPacket(udp.checksum(),
+					UdpPacket udpPacket = new UdpPacket(0,
 							udp.destination(), udp.source(), udp.length());
 
 					ip4Packet.setHeader(IPHeader.UDP);
@@ -141,7 +134,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 				} else if (packet.hasHeader(Icmp.ID)) {
 					packet.getHeader(icmp);
 
-					ICMPPacket icmpPacket = new ICMPPacket(icmp.checksum(),
+					ICMPPacket icmpPacket = new ICMPPacket(0,
 							icmp.code(), icmp.type());
 
 					ip4Packet.setHeader(IPHeader.ICMP);
@@ -159,6 +152,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 		}
 
 		packets.put(packetKey, iPacket);
+		flow.addPacket(iPacket);
 		packetKey++;
 
 	}

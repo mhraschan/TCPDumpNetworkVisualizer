@@ -92,7 +92,7 @@ public class Packet {
 	public SimplePacketDTO convertToSimplePacket() {
 		SimplePacketDTO simplePacket = new SimplePacketDTO();
 		simplePacket.setPacketId(id);
-		simplePacket.setFlowId(id);
+		simplePacket.setFlowId(flowId);
 		simplePacket.setSize(size);
 		simplePacket.setType(SimplePacketType.UNKOWN);
 		

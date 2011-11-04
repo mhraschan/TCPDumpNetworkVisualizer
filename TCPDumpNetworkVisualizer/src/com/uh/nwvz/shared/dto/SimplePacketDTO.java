@@ -25,6 +25,10 @@ public class SimplePacketDTO implements Serializable {
 
 	private SimpleTCPPacketDTO tcpPacket;
 
+	public SimplePacketDTO() {
+		super();
+	}
+
 	public byte[] getDestination() {
 		return destination;
 	}

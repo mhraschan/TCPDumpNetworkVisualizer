@@ -36,7 +36,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>packetTransmissionServiceImpl</servlet-name>
-    <url-pattern>packetTransmission</url-pattern>
+    <url-pattern>/tcpdumpnetworkvisualizer/packetTransmission</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

@@ -1,6 +1,7 @@
 package com.uh.nwvz.server.pcap.packets;
 
 import com.uh.nwvz.server.pcap.packets.enumerations.IPHeader;
+import com.uh.nwvz.shared.SimplePacketType;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class IP6Packet implements GeneralPacket {
@@ -69,8 +70,12 @@ public class IP6Packet implements GeneralPacket {
 
 	@Override
 	public void fillSimplePacket(SimplePacketDTO simplePacket) {
-		// TODO Auto-generated method stub
+		simplePacket.setType(SimplePacketType.IP6);
+		simplePacket.setDestination(destination);
+		simplePacket.setSource(source);
 		
+		if (hasSubPacket())
+			subPacket.fillSimplePacket(simplePacket);
 	}
 
 }
