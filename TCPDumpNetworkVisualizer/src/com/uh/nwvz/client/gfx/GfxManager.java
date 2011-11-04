@@ -29,10 +29,10 @@ public class GfxManager {
 		
 		// paint two nodes and an association
 		Vector center = new Vector(50,50);
-		Node a = new Node(center, 20, CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
+		Node a = new Node(center, 30, "ads.google.at", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
 		nodes.add(a);
-		center = new Vector(100,100);
-		Node b = new Node(center, 30, CssColor.make(128,255,128), CssColor.make(146,255,146), CssColor.make(100,255,100));
+		center = new Vector(200,200);
+		Node b = new Node(center, 40, "localhost", CssColor.make(128,255,128), CssColor.make(146,255,146), CssColor.make(100,255,100));
 		nodes.add(b);
 		Association ass = new Association(a, b);
 		associations.add(ass);

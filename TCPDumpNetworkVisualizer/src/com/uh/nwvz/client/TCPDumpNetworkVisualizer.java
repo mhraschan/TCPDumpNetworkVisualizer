@@ -60,6 +60,8 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 		// create Graphing Canvas
 		cvGraph = Canvas.createIfSupported();
+		cvGraph.setCoordinateSpaceHeight(500);
+		cvGraph.setCoordinateSpaceWidth(1000);
 
 		// initialize event manager
 		CanvasEventManager.initCanvasEventManager(cvGraph);
