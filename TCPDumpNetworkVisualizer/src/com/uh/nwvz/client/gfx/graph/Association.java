@@ -1,16 +1,44 @@
-package com.uh.nwvz.client.gfx.commons;
+package com.uh.nwvz.client.gfx.graph;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.LineCap;
 import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
+import com.uh.nwvz.client.gfx.commons.IGfxObject;
+import com.uh.nwvz.client.gfx.commons.Vector;
 
-public class Association implements GfxObject {
+public class Association implements IGfxObject {
 	
 	private Node startNode;
 	private Node endNode;
 	
 	public Association(Node startNode, Node endNode) {
 		this.startNode = startNode;
+		this.endNode = endNode;
+		startNode.addAssociation(this);
+		endNode.addAssociation(this);
+	}
+
+	
+	
+	public Node getStartNode() {
+		return startNode;
+	}
+
+
+
+	public void setStartNode(Node startNode) {
+		this.startNode = startNode;
+	}
+
+
+
+	public Node getEndNode() {
+		return endNode;
+	}
+
+
+
+	public void setEndNode(Node endNode) {
 		this.endNode = endNode;
 	}
 

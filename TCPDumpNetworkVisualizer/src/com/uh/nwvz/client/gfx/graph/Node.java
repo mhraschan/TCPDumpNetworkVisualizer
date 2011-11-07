@@ -1,4 +1,7 @@
-package com.uh.nwvz.client.gfx.commons;
+package com.uh.nwvz.client.gfx.graph;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.LineCap;
@@ -8,8 +11,10 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.FillStrokeStyle;
 import com.google.gwt.canvas.dom.client.TextMetrics;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
+import com.uh.nwvz.client.gfx.commons.IGfxObject;
+import com.uh.nwvz.client.gfx.commons.Vector;
 
-public class Node implements GfxObject {
+public class Node implements IGfxObject {
 	// basic data
 	private Vector center;
 	private double radius;
@@ -24,6 +29,8 @@ public class Node implements GfxObject {
 	boolean isMouseDown = false;
 	boolean isMouseOver = false;
 	
+	List<Association> associations = new ArrayList<Association>();
+	
 	public Node(Vector center, double radius, String text, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		this.center = center;
 		this.radius = radius;
@@ -37,6 +44,20 @@ public class Node implements GfxObject {
 		mgr.addMouseOverListener(this);
 	}
 	
+
+	
+	public List<Association> getAssociations() {
+		return associations;
+	}
+
+
+
+	public void setAssociations(List<Association> associations) {
+		this.associations = associations;
+	}
+
+
+
 	public Vector getCenter() {
 		return center;
 	}
@@ -44,7 +65,15 @@ public class Node implements GfxObject {
 	public double getRadius() {
 		return radius;
 	}
+	
+	public void setCenter(Vector center) {
+		this.center = center;
+	}
 
+	public void addAssociation(Association assoc) {
+		this.associations.add(assoc);
+	}
+	
 	@Override
 	public void draw(Context2d context) 
 	{

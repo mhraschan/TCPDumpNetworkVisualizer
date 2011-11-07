@@ -11,7 +11,7 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.uh.nwvz.client.gfx.commons.GfxObject;
+import com.uh.nwvz.client.gfx.commons.IGfxObject;
 import com.uh.nwvz.client.gfx.commons.Vector;
 
 public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, MouseUpHandler {	
@@ -19,11 +19,11 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 	
 	private Vector currentMousePosition = new Vector(0,0);
 	
-	private List<GfxObject> mouseDownListeners = new ArrayList<GfxObject>();
-	private List<GfxObject> mouseUpListeners = new ArrayList<GfxObject>();
-	private List<GfxObject> mouseOverListeners = new ArrayList<GfxObject>();
+	private List<IGfxObject> mouseDownListeners = new ArrayList<IGfxObject>();
+	private List<IGfxObject> mouseUpListeners = new ArrayList<IGfxObject>();
+	private List<IGfxObject> mouseOverListeners = new ArrayList<IGfxObject>();
 	
-	private GfxObject lastMouseOverObject = null;
+	private IGfxObject lastMouseOverObject = null;
 	
 	private CanvasEventManager(Canvas canvas) {
 		canvas.addMouseMoveHandler(this);
@@ -41,21 +41,21 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 		}
 	}
 	
-	public void addMouseDownListener(GfxObject gfxObject) {
+	public void addMouseDownListener(IGfxObject gfxObject) {
 		this.mouseDownListeners.add(gfxObject);		
 	}
 	
-	public void addMouseUpListener(GfxObject gfxObject) {
+	public void addMouseUpListener(IGfxObject gfxObject) {
 		this.mouseUpListeners.add(gfxObject);
 	}
 	
-	public void addMouseOverListener(GfxObject gfxObject) {
+	public void addMouseOverListener(IGfxObject gfxObject) {
 		this.mouseOverListeners.add(gfxObject);		
 	}
 	
-	private GfxObject findObjectAtCurrentPosition(List<GfxObject> gfxObjects) {
-		Iterator<GfxObject> it = gfxObjects.iterator();
-		GfxObject obj = null;
+	private IGfxObject findObjectAtCurrentPosition(List<IGfxObject> gfxObjects) {
+		Iterator<IGfxObject> it = gfxObjects.iterator();
+		IGfxObject obj = null;
 		while (it.hasNext()) {
 			obj = it.next();
 			if (obj.isInsideObject(currentMousePosition))
@@ -66,7 +66,7 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 
 	@Override
 	public void onMouseUp(MouseUpEvent event) {
-		GfxObject gfxObject = findObjectAtCurrentPosition(mouseUpListeners);
+		IGfxObject gfxObject = findObjectAtCurrentPosition(mouseUpListeners);
 		if (gfxObject != null) {
 			gfxObject.onMouseUp();
 		}
@@ -74,7 +74,7 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 
 	@Override
 	public void onMouseDown(MouseDownEvent event) {
-		GfxObject gfxObject = findObjectAtCurrentPosition(mouseDownListeners);
+		IGfxObject gfxObject = findObjectAtCurrentPosition(mouseDownListeners);
 		if (gfxObject != null) {
 			gfxObject.onMouseDown();
 		}
@@ -86,7 +86,7 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 		currentMousePosition.setX(event.getX());
 		currentMousePosition.setY(event.getY());
 		
-		GfxObject gfxObject = findObjectAtCurrentPosition(mouseOverListeners);
+		IGfxObject gfxObject = findObjectAtCurrentPosition(mouseOverListeners);
 		if (gfxObject != null) {
 			gfxObject.onMouseOver();
 		}
