@@ -52,4 +52,8 @@ public class Vector {
 		double y = v1.y - v2.y;
 		return new Vector(x,y);
 	}
+	
+	public static double scalarProduct(Vector v1, Vector v2) {
+		return (v1.x * v2.x + v1.y * v2.y);
+	}
 }

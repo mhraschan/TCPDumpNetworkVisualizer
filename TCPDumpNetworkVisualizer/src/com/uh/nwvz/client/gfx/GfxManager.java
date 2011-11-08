@@ -62,13 +62,21 @@ public class GfxManager {
 		Iterator<Association> itAssociation = graph.getAssociations().iterator();
 		while (itAssociation.hasNext()) {
 			Association a = itAssociation.next();
-			a.draw(context);
+			a.drawBackground(context);
 		}
 		
+		// node background
 		Iterator<Node> itNodes = graph.getNodes().iterator();
 		while (itNodes.hasNext()) {
 			Node n = itNodes.next();
-			n.draw(context);
+			n.drawBackground(context);
+		}
+		
+		// node foreground
+		itNodes = graph.getNodes().iterator();
+		while (itNodes.hasNext()) {
+			Node n = itNodes.next();
+			n.drawForeground(context);
 		}
 
 	}

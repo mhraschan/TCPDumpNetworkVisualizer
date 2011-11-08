@@ -74,8 +74,20 @@ public class Node implements IGfxObject {
 		this.associations.add(assoc);
 	}
 	
+	@Override 
+	public void drawForeground(Context2d context) {
+		context.setFillStyle(CssColor.make("black"));
+		context.setTextAlign(TextAlign.CENTER);
+		TextMetrics metrics = context.measureText(text);
+		if (metrics.getWidth() < 2*radius) 
+			context.fillText(text, center.getX(), center.getY() + 3 , 2*radius); 
+		else if (this.isMouseOver) {
+			context.fillText(text, center.getX()+2*radius, center.getY()-radius);
+		}
+	}
+	
 	@Override
-	public void draw(Context2d context) 
+	public void drawBackground(Context2d context) 
 	{
 		context.setFont("bold 1em Arial");
 		context.setLineJoin(LineJoin.ROUND);
@@ -95,16 +107,7 @@ public class Node implements IGfxObject {
 		context.arc(center.getX(), center.getY(), radius, 0, 2.0 * Math.PI);
 		context.closePath();
 		context.fill();
-		context.stroke();
-		context.setFillStyle(CssColor.make("black"));
-		context.setTextAlign(TextAlign.CENTER);
-		TextMetrics metrics = context.measureText(text);
-		if (metrics.getWidth() < 2*radius) 
-			context.fillText(text, center.getX(), center.getY() + 3 , 2*radius); 
-		else if (this.isMouseOver) {
-			context.fillText(text, center.getX()+2*radius, center.getY()-radius);
-		}
-			
+		context.stroke();			
 	}
 
 	@Override
