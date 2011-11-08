@@ -23,6 +23,10 @@ public class SimplePacketDTO implements Serializable {
 
 	private byte[] destination;
 
+	private String sourceHostname;
+
+	private String destHostname;
+
 	private SimpleTCPPacketDTO tcpPacket;
 
 	public SimplePacketDTO() {
@@ -91,6 +95,22 @@ public class SimplePacketDTO implements Serializable {
 
 	public void setType(SimplePacketType type) {
 		this.type = type;
+	}
+
+	public String getSourceHostname() {
+		return sourceHostname;
+	}
+
+	public void setSourceHostname(String sourceHostname) {
+		this.sourceHostname = sourceHostname;
+	}
+
+	public String getDestHostname() {
+		return destHostname;
+	}
+
+	public void setDestHostname(String destHostname) {
+		this.destHostname = destHostname;
 	}
 
 }

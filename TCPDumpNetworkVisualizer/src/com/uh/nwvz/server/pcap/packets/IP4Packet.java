@@ -12,6 +12,10 @@ public class IP4Packet implements GeneralPacket {
 
 	private byte[] source;
 
+	private String destinationHostName;
+
+	private String sourceHostName;
+
 	private int flags;
 
 	private int version;
@@ -23,11 +27,14 @@ public class IP4Packet implements GeneralPacket {
 	private GeneralPacket subPacket;
 
 	public IP4Packet(int checksum, byte[] destination, byte[] source,
-			int flags, int version, int type) {
+			String destinationHostName, String sourceHostName, int flags,
+			int version, int type) {
 		super();
 		this.checksum = checksum;
 		this.destination = destination;
 		this.source = source;
+		this.destinationHostName = destinationHostName;
+		this.sourceHostName = sourceHostName;
 		this.flags = flags;
 		this.version = version;
 		this.type = type;
@@ -107,9 +114,27 @@ public class IP4Packet implements GeneralPacket {
 		simplePacket.setType(SimplePacketType.IP4);
 		simplePacket.setDestination(destination);
 		simplePacket.setSource(source);
-		
+		simplePacket.setDestHostname(destinationHostName);
+		simplePacket.setSourceHostname(sourceHostName);
+
 		if (hasSubPacket())
 			subPacket.fillSimplePacket(simplePacket);
+	}
+
+	public String getDestinationHostName() {
+		return destinationHostName;
+	}
+
+	public void setDestinationHostName(String destinationHostName) {
+		this.destinationHostName = destinationHostName;
+	}
+
+	public String getSourceHostName() {
+		return sourceHostName;
+	}
+
+	public void setSourceHostName(String sourceHostName) {
+		this.sourceHostName = sourceHostName;
 	}
 
 }

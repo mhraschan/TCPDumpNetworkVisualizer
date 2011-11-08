@@ -109,8 +109,10 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	@Override
 	public void received(SimplePacketDTO[] packets) {
 		for (SimplePacketDTO packet : packets) {
-			lbPackets.addItem(PcapUtil.ip(packet.getSource()) + " -> "
-					+ PcapUtil.ip(packet.getDestination()) + "; FlowId: "
+			lbPackets.addItem(PcapUtil.ip(packet.getSource()) + "("
+					+ packet.getSourceHostname() + ") -> "
+					+ PcapUtil.ip(packet.getDestination()) + "("
+					+ packet.getDestHostname() + "); FlowId: "
 					+ packet.getFlowId());
 		}
 	}

@@ -18,9 +18,9 @@ public class PacketTransferScheduler {
 			logArea.logInfo(currentPacketCount + " of " + totalPacketCount
 					+ " packets received!");
 			receiver.received(packets);
-			new PacketTransferScheduler(logArea, totalPacketCount,
-					currentPacketCount, receiver, packetTransmissionSvc)
-					.start();
+//			new PacketTransferScheduler(logArea, totalPacketCount,
+//					currentPacketCount, receiver, packetTransmissionSvc)
+//					.start();
 		}
 	};
 

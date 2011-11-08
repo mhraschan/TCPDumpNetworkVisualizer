@@ -15,6 +15,7 @@ import org.jnetpcap.protocol.network.Ip6;
 import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.protocol.tcpip.Tcp;
 import org.jnetpcap.protocol.tcpip.Udp;
+import org.jnetpcap.util.resolver.IpResolver;
 
 import com.uh.nwvz.server.pcap.flow.Flow;
 import com.uh.nwvz.server.pcap.packets.EthernetPacket;
@@ -29,6 +30,7 @@ import com.uh.nwvz.server.pcap.packets.enumerations.EthernetHeader;
 import com.uh.nwvz.server.pcap.packets.enumerations.IPHeader;
 import com.uh.nwvz.server.pcap.packets.enumerations.PacketHeader;
 import com.uh.nwvz.server.pcap.packets.enumerations.TCPHeader;
+import com.uh.nwvz.shared.PcapUtil;
 
 public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
@@ -50,6 +52,8 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
 	private final Udp udp = new Udp();
 
+	private IpResolver ipResolver = new IpResolver();
+
 	private Map<Integer, Packet> packets = new TreeMap<Integer, Packet>();
 
 	private long packetCount = 0;
@@ -59,6 +63,8 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 	private final Map<JFlowKey, Flow> flows = new HashMap<JFlowKey, Flow>();
 
 	private final Map<Integer, Flow> iFlows = new TreeMap<Integer, Flow>();
+
+	private final Map<String, String> hostnames = new HashMap<String, String>();
 
 	@Override
 	public void nextPacket(PcapPacket packet, StringBuilder errbuf) {
@@ -86,9 +92,8 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 		if (packet.hasHeader(Ethernet.ID)) {
 			packet.getHeader(ethernet);
 
-			EthernetPacket ethernetPacket = new EthernetPacket(
-					0, ethernet.destination(),
-					ethernet.source(), ethernet.type());
+			EthernetPacket ethernetPacket = new EthernetPacket(0,
+					ethernet.destination(), ethernet.source(), ethernet.type());
 
 			iPacket.setHeader(PacketHeader.ETHERNET);
 			iPacket.setSubPacket(ethernetPacket);
@@ -96,8 +101,35 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 			if (packet.hasHeader(Ip4.ID)) {
 				packet.getHeader(ip4);
 
-				IP4Packet ip4Packet = new IP4Packet(0,
-						ip4.destination(), ip4.source(), ip4.flags(),
+				String destIp = PcapUtil.ip(ip4.destination());
+				String srcIp = PcapUtil.ip(ip4.source());
+				String destHostname = "";
+				String srcHostname = "";
+
+				if (hostnames.containsKey(destIp))
+					destHostname = hostnames.get(destIp);
+				else {
+					destHostname = ipResolver.resolveToName(ip4.destination(),
+							ipResolver.toHashCode(ip4.destination()));
+					if (destHostname == null)
+						destHostname = "";
+					
+					hostnames.put(destIp, destHostname);
+				}
+
+				if (hostnames.containsKey(srcIp))
+					srcHostname = hostnames.get(srcHostname);
+				else {
+					srcHostname = ipResolver.resolveToName(ip4.source(),
+							ipResolver.toHashCode(ip4.source()));
+					
+					if (srcHostname == null)
+						srcHostname = "";
+					hostnames.put(srcIp, srcHostname);
+				}
+
+				IP4Packet ip4Packet = new IP4Packet(0, ip4.destination(),
+						ip4.source(), destHostname, srcHostname, ip4.flags(),
 						ip4.version(), ip4.type());
 
 				ethernetPacket.setHeader(EthernetHeader.IP4);
@@ -126,16 +158,16 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 				} else if (packet.hasHeader(Udp.ID)) {
 					packet.getHeader(udp);
 
-					UdpPacket udpPacket = new UdpPacket(0,
-							udp.destination(), udp.source(), udp.length());
+					UdpPacket udpPacket = new UdpPacket(0, udp.destination(),
+							udp.source(), udp.length());
 
 					ip4Packet.setHeader(IPHeader.UDP);
 					ip4Packet.setSubPacket(udpPacket);
 				} else if (packet.hasHeader(Icmp.ID)) {
 					packet.getHeader(icmp);
 
-					ICMPPacket icmpPacket = new ICMPPacket(0,
-							icmp.code(), icmp.type());
+					ICMPPacket icmpPacket = new ICMPPacket(0, icmp.code(),
+							icmp.type());
 
 					ip4Packet.setHeader(IPHeader.ICMP);
 					ip4Packet.setSubPacket(icmpPacket);
