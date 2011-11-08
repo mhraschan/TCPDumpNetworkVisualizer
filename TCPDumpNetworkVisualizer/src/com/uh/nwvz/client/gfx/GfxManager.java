@@ -30,28 +30,44 @@ public class GfxManager {
 	}
 	
 	private void dummyInit() {	
-		// paint two nodes and an association
-		Vector center = new Vector(50,50);
-		Node a = new Node(center, 30, "ads.google.at", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
-		graph.addNode(a);
-		center = new Vector(200,200);
-		Node b = new Node(center, 40, "localhost", CssColor.make(128,255,128), CssColor.make(146,255,146), CssColor.make(100,255,100));
-		graph.addNode(b);
-		
-		Node c = new Node(center, 20, "www.google.com", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
-		graph.addNode(c);
-		
-		Association ass = new Association(b, a);
+//		// paint two nodes and an association
+//		Vector center = new Vector(50,50);
+//		Node a = new Node(center, 30, "ads.google.at", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
+//		graph.addNode(a);
+//		center = new Vector(200,200);
+//		Node b = new Node(center, 40, "localhost", CssColor.make(128,255,128), CssColor.make(146,255,146), CssColor.make(100,255,100));
+//		graph.addNode(b);
+//		
+//		Node c = new Node(center, 20, "www.google.com", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
+//		graph.addNode(c);
+//		
+//		Association ass = new Association(b, a);
+//		graph.addAssociation(ass);
+//		
+//		ass = new Association(b,c);
+//		graph.addAssociation(ass);
+//		
+//		ass = new Association(c, a);
+//		graph.addAssociation(ass);
+//		
+//		
+//		this.layout.performLayout();
+	}
+	
+	public Node createMainNode() {
+		return new Node(new Vector(50, 50), 30, "home", CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
+	}
+	
+	public Node createNode(String text) {
+		return new Node(new Vector(50, 50), 20, text, CssColor.make(255,128,128), CssColor.make(255,146,146), CssColor.make(255,100,100));
+	}
+	
+	public void addNode(Node node) {
+		graph.addNode(node);
+	}
+	
+	public void addAssociation(Association ass) {
 		graph.addAssociation(ass);
-		
-		ass = new Association(b,c);
-		graph.addAssociation(ass);
-		
-		ass = new Association(c, a);
-		graph.addAssociation(ass);
-		
-		
-		this.layout.performLayout();
 	}
 	
 	public void paint() {		
@@ -71,5 +87,13 @@ public class GfxManager {
 			n.draw(context);
 		}
 
+	}
+	
+	public void forceLayout() {
+		this.layout.performLayout();
+	}
+	
+	public void reset() {
+		graph.reset();
 	}
 }

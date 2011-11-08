@@ -35,4 +35,9 @@ public class Graph {
 	public void addAssociation(Association a) {
 		associations.add(a);
 	}
+	
+	public void reset() {
+		nodes.clear();
+		associations.clear();
+	}
 }

@@ -15,8 +15,8 @@ public class ForceDirectedLayout implements ILayout {
 	
 	private final double GRAVITY_CONSTANT = 1E-8;			// determines the force between nodes altogether
 	private final double SPRING_CONSTANT = -5E-7;			// determines the force between connected nodes
-	private final double MAX_KINETIC_ENERGY = 1E-6;			// constant to stop iterative process
-	private final double DAMPING_CONSTANT = 0.5; 			// damping constant of the adaption process
+	private final double MAX_KINETIC_ENERGY = 1E-5;			// constant to stop iterative process
+	private final double DAMPING_CONSTANT = 0.9; 			// damping constant of the adaption process
 	private final double TIMESTEP = 1;  
 	
 

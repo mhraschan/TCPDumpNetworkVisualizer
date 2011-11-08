@@ -8,35 +8,43 @@ import gwtupload.client.MultiUploader;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.uh.nwvz.client.commons.LogListener;
 import com.uh.nwvz.client.commons.PacketReceiveNotifier;
 import com.uh.nwvz.client.commons.async.PacketCountAsyncCallback;
 import com.uh.nwvz.client.components.LogTextArea;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 import com.uh.nwvz.client.gfx.GfxManager;
-import com.uh.nwvz.shared.PcapUtil;
+import com.uh.nwvz.client.network.GraphBuilder;
+import com.uh.nwvz.client.network.PacketManager;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class TCPDumpNetworkVisualizer implements EntryPoint,
-		PacketReceiveNotifier, IUploader.OnFinishUploaderHandler {
+		PacketReceiveNotifier, IUploader.OnFinishUploaderHandler, LogListener {
 
 	private ListBox lbFlowMap = new ListBox();
 	private Canvas cvGraph = null;
 	private Label lblPacketCount = new Label();
 	private ListBox lbPackets = new ListBox();
 	private LogTextArea rtLog = new LogTextArea();
+	private Button startButton = new Button("Start");
 
 	// timer refresh rate, in milliseconds
 	private final int refreshRate = 25;
 
+	private GraphBuilder graphBuilder = null;
 	private GfxManager gfxManager = null;
+	private PacketManager packetManager = null;
 
 	PacketTransmissionServiceAsync packetTransmissionSvc = GWT
 			.create(PacketTransmissionService.class);
@@ -56,7 +64,17 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 		flowPanel.add(lblPacketCount);
 		flowPanel.add(lbPackets);
 		flowPanel.add(rtLog);
+		flowPanel.add(startButton);
 		RootPanel.get("default").add(flowPanel);
+		
+		startButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				packetManager.start();
+			}
+			
+		});
 
 		// create Graphing Canvas
 		cvGraph = Canvas.createIfSupported();
@@ -68,6 +86,8 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 		// initialize graphics manager
 		gfxManager = new GfxManager(cvGraph);
+		graphBuilder = new GraphBuilder(gfxManager);
+		packetManager = new PacketManager(graphBuilder, this);
 
 		RootPanel.get("graph_canvas").add(cvGraph);
 
@@ -100,7 +120,7 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 			packetTransmissionSvc
 					.getTotalPacketCount(new PacketCountAsyncCallback(this,
-							rtLog, packetTransmissionSvc));
+							this, packetTransmissionSvc));
 		} else {
 			rtLog.logError("File-upload failed");
 		}
@@ -108,13 +128,22 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 	@Override
 	public void received(SimplePacketDTO[] packets) {
-		for (SimplePacketDTO packet : packets) {
-			lbPackets.addItem(PcapUtil.ip(packet.getSource()) + "("
-					+ packet.getSourceHostname() + ") -> "
-					+ PcapUtil.ip(packet.getDestination()) + "("
-					+ packet.getDestHostname() + "); FlowId: "
-					+ packet.getFlowId());
-		}
+		packetManager.addPackets(packets);
+	}
+
+	@Override
+	public void logError(String message) {
+		rtLog.logError(message);
+	}
+
+	@Override
+	public void logWarn(String message) {
+		rtLog.logWarn(message);
+	}
+
+	@Override
+	public void logInfo(String message) {
+		rtLog.logInfo(message);
 	}
 
 }
