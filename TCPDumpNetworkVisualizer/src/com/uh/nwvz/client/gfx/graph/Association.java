@@ -46,7 +46,8 @@ public class Association implements IGfxObject {
 	public void draw(Context2d context) {
 		Vector centerStart = startNode.getCenter();
 		Vector centerEnd = endNode.getCenter();
-		double phi = Math.atan((centerStart.getY() - centerEnd.getY())/(centerStart.getX() - centerEnd.getX()));
+		double phi = Math.atan2((centerStart.getY() - centerEnd.getY()), (centerStart.getX()-centerEnd.getX()));
+		//double phi = Math.atan((centerStart.getY() - centerEnd.getY())/(centerStart.getX() - centerEnd.getX()));
 		
 		
 		context.setLineJoin(LineJoin.ROUND);
@@ -54,10 +55,10 @@ public class Association implements IGfxObject {
 		context.setLineWidth(1.2);
 		
 		context.beginPath();
-		context.moveTo(centerStart.getX() + startNode.getRadius() * Math.cos(phi),
-				centerStart.getY() + startNode.getRadius() * Math.sin(phi));
-		context.lineTo(centerEnd.getX() - endNode.getRadius() * Math.cos(phi),
-				centerEnd.getY() - endNode.getRadius() * Math.sin(phi));
+		context.moveTo(centerStart.getX() - startNode.getRadius() * Math.cos(phi),
+				centerStart.getY() - startNode.getRadius() * Math.sin(phi));
+		context.lineTo(centerEnd.getX() + endNode.getRadius() * Math.cos(phi),
+				centerEnd.getY() + endNode.getRadius() * Math.sin(phi));
 		context.closePath();
 		context.stroke();
 		

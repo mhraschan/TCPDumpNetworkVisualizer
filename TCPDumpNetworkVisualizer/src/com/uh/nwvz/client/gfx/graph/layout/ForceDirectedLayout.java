@@ -13,6 +13,12 @@ public class ForceDirectedLayout implements ILayout {
 	private Size canvasSize = new Size(0,0);
 	private Graph graph = null;
 	
+	private final double GRAVITY_CONSTANT = 1E-8;			// determines the force between nodes altogether
+	private final double SPRING_CONSTANT = -5E-7;			// determines the force between connected nodes
+	private final double MAX_KINETIC_ENERGY = 1E-6;			// constant to stop iterative process
+	private final double DAMPING_CONSTANT = 0.5; 			// damping constant of the adaption process
+	private final double TIMESTEP = 1;  
+	
 
 	@Override
 	public void setGraph(Graph g) {
@@ -28,20 +34,15 @@ public class ForceDirectedLayout implements ILayout {
 	public void performLayout() {
 		// random initialization:
 		List<NodeWrapper> nodes = new ArrayList<NodeWrapper>();
-		
-		int i = (int) canvasSize.getWidth() / 2 - graph.getNodes().size() / 2;
-		
+				
 		for (Node n : graph.getNodes()) {
 			NodeWrapper nodeWrapper = new NodeWrapper(n, new Vector(0,0));
-			n.setCenter(new Vector(i,i));
+			n.setCenter(new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight()));
 			nodes.add(nodeWrapper);
-			i++;
 		}
 		
 		// now performing force-directed algorithm
 		double totalKineticEnergy;
-		final double damping = 0.5; // CONSTANT !!!!!
-		final double timestep = 1;  // CONSTANT !!!!
 		do {
 			totalKineticEnergy = 0;
 			
@@ -62,30 +63,26 @@ public class ForceDirectedLayout implements ILayout {
 				}
 				
 				Vector vel = new Vector(node.getVelocity());
-				vel.add(netForce.mult(timestep)).mult(damping);
+				vel.add(netForce.mult(TIMESTEP)).mult(DAMPING_CONSTANT);
 				node.setVelocity(vel); 
 				
 				Vector pos = node.getNode().getCenter();
-				pos.add(vel.mult(timestep));
+				pos.add(vel.mult(TIMESTEP));
 		        // reference, no update
 				
 				totalKineticEnergy += node.getMass() * vel.norm();
 			}
-		} while (totalKineticEnergy > 3);		
+		} while (totalKineticEnergy > MAX_KINETIC_ENERGY);		
 	}
 	
-	private Vector coulombRepulsion(NodeWrapper startNode, NodeWrapper endNode) {
-		final double gravityConstant = 3;
-		
+	private Vector coulombRepulsion(NodeWrapper startNode, NodeWrapper endNode) {		
 		Vector diff = Vector.subtract(startNode.getNode().getCenter(), endNode.getNode().getCenter());
 		double rPow3 = Math.pow(diff.norm(), 3/2);
-		return (diff.mult(gravityConstant * startNode.getMass() * endNode.getMass() / rPow3));
+		return (diff.mult(GRAVITY_CONSTANT * startNode.getMass() * endNode.getMass() / rPow3));
 	}
 	
-	private Vector hookAttraction(Node startNode, Node endNode) {
-		final double springConstant = -2;
-		
-		return (Vector.subtract(startNode.getCenter(), endNode.getCenter()).mult(springConstant));
+	private Vector hookAttraction(Node startNode, Node endNode) {		
+		return (Vector.subtract(startNode.getCenter(), endNode.getCenter()).mult(SPRING_CONSTANT));
 	}
 	
 	private class NodeWrapper {
@@ -97,7 +94,7 @@ public class ForceDirectedLayout implements ILayout {
 		public NodeWrapper(Node node, Vector velocity) {
 			this.node = node;
 			this.velocity = velocity;
-			this.mass = node.getRadius()*2; // mass derived from radius
+			this.mass = node.getRadius()*node.getRadius(); // mass proportional to area
 		}
 		
 		public Node getNode() {
