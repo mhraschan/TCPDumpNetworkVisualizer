@@ -10,7 +10,7 @@ import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class PacketManager extends Timer {
 
-	private final static int START_DELAY = 100;
+	private final static int START_DELAY = 500;
 
 	private List<SimplePacketDTO> packets = new ArrayList<SimplePacketDTO>();
 

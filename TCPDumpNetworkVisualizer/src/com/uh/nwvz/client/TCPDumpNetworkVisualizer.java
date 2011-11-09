@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.uh.nwvz.client.commons.LogListener;
 import com.uh.nwvz.client.commons.PacketReceiveNotifier;
 import com.uh.nwvz.client.commons.async.PacketCountAsyncCallback;
@@ -38,6 +39,9 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	private ListBox lbPackets = new ListBox();
 	private LogTextArea rtLog = new LogTextArea();
 	private Button startButton = new Button("Start");
+	private Button stopButton = new Button("Stop");
+	private TextBox tbCurrentPacket = new TextBox();
+	private Button btnSetCurrentPacket = new Button("Set current packet");
 
 	// timer refresh rate, in milliseconds
 	private final int refreshRate = 25;
@@ -65,6 +69,9 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 		flowPanel.add(lbPackets);
 		flowPanel.add(rtLog);
 		flowPanel.add(startButton);
+		flowPanel.add(stopButton);
+		flowPanel.add(tbCurrentPacket);
+		flowPanel.add(btnSetCurrentPacket);
 		RootPanel.get("default").add(flowPanel);
 		
 		startButton.addClickHandler(new ClickHandler() {
@@ -72,6 +79,24 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 			@Override
 			public void onClick(ClickEvent event) {
 				packetManager.start();
+			}
+			
+		});
+		
+		stopButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				packetManager.stop();
+			}
+			
+		});
+		
+		btnSetCurrentPacket.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				packetManager.forceDrawPackets(Integer.valueOf(tbCurrentPacket.getText()));
 			}
 			
 		});

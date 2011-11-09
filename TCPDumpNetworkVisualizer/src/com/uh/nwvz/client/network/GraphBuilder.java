@@ -60,7 +60,7 @@ public class GraphBuilder {
 	public void forcePackets(List<SimplePacketDTO> packets) {
 		reset();
 		for (SimplePacketDTO packet : packets)
-			addNextPacket(packet);
+			addPacket(packet);
 		gfxManager.forceLayout();
 	}
 
