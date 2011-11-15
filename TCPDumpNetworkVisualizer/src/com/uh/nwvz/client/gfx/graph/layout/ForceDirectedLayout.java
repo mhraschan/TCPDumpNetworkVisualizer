@@ -13,8 +13,8 @@ public class ForceDirectedLayout implements ILayout {
 	private Size canvasSize = new Size(0,0);
 	private Graph graph = null;
 	
-	private final double GRAVITY_CONSTANT = 1E-8;			// determines the force between nodes altogether
-	private final double SPRING_CONSTANT = -5E-7;			// determines the force between connected nodes
+	private final double GRAVITY_CONSTANT = 8E-9;			// determines the force between nodes altogether
+	private final double SPRING_CONSTANT = -3E-7;			// determines the force between connected nodes
 	private final double MAX_KINETIC_ENERGY = 1E-5;			// constant to stop iterative process
 	private final double DAMPING_CONSTANT = 0.9; 			// damping constant of the adaption process
 	private final double TIMESTEP = 1;  
@@ -35,11 +35,13 @@ public class ForceDirectedLayout implements ILayout {
 		// random initialization:
 		List<NodeWrapper> nodes = new ArrayList<NodeWrapper>();
 				
-		for (Node n : graph.getNodes()) {
+		/*for (Node n : graph.getNodes()) {
 			NodeWrapper nodeWrapper = new NodeWrapper(n, new Vector(0,0));
 			n.setCenter(new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight()));
 			nodes.add(nodeWrapper);
-		}
+		}*/
+		
+		double maxKineticEnergy = Math.pow(graph.getNodes().size(),2) * MAX_KINETIC_ENERGY;
 		
 		// now performing force-directed algorithm
 		double totalKineticEnergy;
@@ -72,7 +74,7 @@ public class ForceDirectedLayout implements ILayout {
 				
 				totalKineticEnergy += node.getMass() * vel.norm();
 			}
-		} while (totalKineticEnergy > MAX_KINETIC_ENERGY);		
+		} while (totalKineticEnergy > maxKineticEnergy);		
 	}
 	
 	private Vector coulombRepulsion(NodeWrapper startNode, NodeWrapper endNode) {		

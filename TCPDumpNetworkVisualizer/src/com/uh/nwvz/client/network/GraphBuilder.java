@@ -23,7 +23,7 @@ public class GraphBuilder {
 	public GraphBuilder(GfxManager gfxManager) {
 		this.gfxManager = gfxManager;
 
-		homeNode = gfxManager.createMainNode();
+		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
 		gfxManager.addNode(homeNode);
 	}
 
@@ -36,9 +36,9 @@ public class GraphBuilder {
 			Node newNode = null;
 
 			if (!dest.equals(LOCALHOST)) {
-				newNode = gfxManager.createNode(dest);
+				newNode = NetworkNodeFactory.getNetworkNodeFactory().createHTTPNode(dest);
 			} else {
-				newNode = gfxManager.createNode(src);
+				newNode = NetworkNodeFactory.getNetworkNodeFactory().createHTTPNode(src);
 			}
 
 			ass = new Association(homeNode, newNode);
@@ -67,7 +67,7 @@ public class GraphBuilder {
 	public void reset() {
 		gfxManager.reset();
 		associations.clear();
-		homeNode = gfxManager.createMainNode();
+		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
 	}
 
 }

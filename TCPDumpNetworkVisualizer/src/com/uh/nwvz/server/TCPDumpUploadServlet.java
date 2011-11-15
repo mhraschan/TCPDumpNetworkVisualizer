@@ -35,6 +35,7 @@ public class TCPDumpUploadServlet extends UploadAction {
 
 					StringBuilder errbuf = new StringBuilder();
 
+					System.out.println(System.getProperty("java.library.path"));
 					final Pcap pcap = Pcap.openOffline(file.getAbsolutePath(),
 							errbuf);
 					if (pcap == null) {

@@ -23,7 +23,9 @@ import com.uh.nwvz.client.commons.async.PacketCountAsyncCallback;
 import com.uh.nwvz.client.components.LogTextArea;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 import com.uh.nwvz.client.gfx.GfxManager;
+import com.uh.nwvz.client.gfx.commons.Size;
 import com.uh.nwvz.client.network.GraphBuilder;
+import com.uh.nwvz.client.network.NetworkNodeFactory;
 import com.uh.nwvz.client.network.PacketManager;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
@@ -108,6 +110,7 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 		// initialize event manager
 		CanvasEventManager.initCanvasEventManager(cvGraph);
+		NetworkNodeFactory.initNetworkNodeFactory(new Size(cvGraph.getCoordinateSpaceWidth(), cvGraph.getCoordinateSpaceHeight()));
 
 		// initialize graphics manager
 		gfxManager = new GfxManager(cvGraph);
