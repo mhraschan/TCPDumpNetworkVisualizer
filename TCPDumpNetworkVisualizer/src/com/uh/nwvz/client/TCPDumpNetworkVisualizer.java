@@ -17,6 +17,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.kiouri.sliderbar.client.event.BarValueChangedEvent;
+import com.kiouri.sliderbar.client.event.BarValueChangedHandler;
 import com.kiouri.sliderbar.client.view.SliderBarHorizontal;
 import com.uh.nwvz.client.commons.LogListener;
 import com.uh.nwvz.client.commons.PacketReceiveNotifier;
@@ -119,6 +121,15 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 		gfxManager = new GfxManager(cvGraph);
 		graphBuilder = new GraphBuilder(gfxManager);
 		packetManager = new PacketManager(graphBuilder, this);
+		
+		timeAxisSlider.addBarValueChangedHandler(new BarValueChangedHandler() {
+
+			@Override
+			public void onBarValueChanged(BarValueChangedEvent event) {
+				packetManager.setTime(event.getValue());	
+			}
+			
+		});
 
 		RootPanel.get("graph_canvas").add(cvGraph);
 		RootPanel.get("slider").add(timeAxisSlider);

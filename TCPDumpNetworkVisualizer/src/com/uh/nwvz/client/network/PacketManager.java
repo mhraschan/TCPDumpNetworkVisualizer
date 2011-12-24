@@ -33,6 +33,11 @@ public class PacketManager extends Timer {
 		this.graphBuilder = graphBuilder;
 		this.logListener = logListener;
 	}
+	
+	public void setTime(int time) {
+		// load data
+		// build graph
+	}
 
 	public void addPackets(SimplePacketDTO[] newPackets) {
 		for (SimplePacketDTO newPacket : newPackets)
