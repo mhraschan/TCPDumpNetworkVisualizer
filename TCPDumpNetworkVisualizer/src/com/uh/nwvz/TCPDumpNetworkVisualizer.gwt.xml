@@ -13,6 +13,7 @@
 
   <!-- Other module inherits                                      -->
   <inherits name="gwtupload.GWTUpload"/>
+  <inherits name="com.kiouri.sliderbar.SliderBarMVP" />
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>
   

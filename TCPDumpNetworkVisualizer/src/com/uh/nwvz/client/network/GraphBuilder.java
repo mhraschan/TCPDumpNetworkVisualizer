@@ -12,7 +12,7 @@ import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class GraphBuilder {
 
-	private final static String LOCALHOST = "10.0.0.2";
+	private final static String LOCALHOST = "10.0.2.15";
 
 	private Map<Integer, Association> associations = new HashMap<Integer, Association>();
 

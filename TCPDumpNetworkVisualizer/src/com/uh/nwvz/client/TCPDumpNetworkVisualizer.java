@@ -17,10 +17,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.kiouri.sliderbar.client.view.SliderBarHorizontal;
 import com.uh.nwvz.client.commons.LogListener;
 import com.uh.nwvz.client.commons.PacketReceiveNotifier;
 import com.uh.nwvz.client.commons.async.PacketCountAsyncCallback;
 import com.uh.nwvz.client.components.LogTextArea;
+import com.uh.nwvz.client.components.TimeSlider;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 import com.uh.nwvz.client.gfx.GfxManager;
 import com.uh.nwvz.client.gfx.commons.Size;
@@ -44,9 +46,10 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	private Button stopButton = new Button("Stop");
 	private TextBox tbCurrentPacket = new TextBox();
 	private Button btnSetCurrentPacket = new Button("Set current packet");
-
+	private TimeSlider timeAxisSlider = new TimeSlider(100, "1000px");
+	
 	// timer refresh rate, in milliseconds
-	private final int refreshRate = 25;
+	private final int refreshRate = 100;
 
 	private GraphBuilder graphBuilder = null;
 	private GfxManager gfxManager = null;
@@ -118,6 +121,7 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 		packetManager = new PacketManager(graphBuilder, this);
 
 		RootPanel.get("graph_canvas").add(cvGraph);
+		RootPanel.get("slider").add(timeAxisSlider);
 
 		final Timer timer = new Timer() {
 			@Override
