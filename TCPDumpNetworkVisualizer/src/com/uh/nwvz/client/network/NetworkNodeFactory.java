@@ -38,19 +38,19 @@ public class NetworkNodeFactory {
 		return singleton;
 	}
 	
-	public Node createHomeNode() {
+	public NetworkNode createHomeNode() {
 		Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
-		return new Node(center, 30, "home", ColorProvider.getNormalColor(Protocol.LOCALHOST), 
+		return new NetworkNode(center, 30, "home", ColorProvider.getNormalColor(Protocol.LOCALHOST), 
 				ColorProvider.getMouseOverColor(Protocol.LOCALHOST), ColorProvider.getClickColor(Protocol.LOCALHOST));
 	}
 	
-	public Node createHTTPNode(String name) {
+	public NetworkNode createHTTPNode(String name) {
 		Vector center = new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight());
 		/*Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
 		Vector rVec = new Vector(radius * Math.cos(currentAngle), radius * Math.sin(currentAngle));
 		center.add(rVec);*/
 		currentAngle += ANGLE_INCREMENT;
-		return new Node(center, 20, name, ColorProvider.getNormalColor(Protocol.HTTP), 
+		return new NetworkNode(center, 20, name, ColorProvider.getNormalColor(Protocol.HTTP), 
 				ColorProvider.getMouseOverColor(Protocol.HTTP), ColorProvider.getClickColor(Protocol.HTTP));
 	}
 

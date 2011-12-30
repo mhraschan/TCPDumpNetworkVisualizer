@@ -4,19 +4,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.uh.nwvz.client.components.InformationPopup;
 import com.uh.nwvz.client.gfx.GfxManager;
+import com.uh.nwvz.client.gfx.commons.IGfxObject;
+import com.uh.nwvz.client.gfx.commons.MouseClickHandler;
 import com.uh.nwvz.client.gfx.graph.Association;
 import com.uh.nwvz.client.gfx.graph.Node;
 import com.uh.nwvz.shared.PcapUtil;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
-public class GraphBuilder {
+public class GraphBuilder implements MouseClickHandler {
 
 	private final static String LOCALHOST = "10.0.2.15";
 
 	private Map<Integer, Association> associations = new HashMap<Integer, Association>();
 
-	private Node homeNode;
+	private NetworkNode homeNode;
 
 	private GfxManager gfxManager;
 
@@ -25,6 +28,7 @@ public class GraphBuilder {
 
 		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
 		gfxManager.addNode(homeNode);
+		homeNode.addMouseClickHandler(this);
 	}
 
 	private boolean addPacket(SimplePacketDTO packet) {
@@ -41,6 +45,7 @@ public class GraphBuilder {
 				newNode = NetworkNodeFactory.getNetworkNodeFactory().createHTTPNode(src);
 			}
 
+			newNode.addMouseClickHandler(this);
 			ass = new Association(homeNode, newNode);
 			gfxManager.addNode(newNode);
 			gfxManager.addAssociation(ass);
@@ -68,6 +73,18 @@ public class GraphBuilder {
 		gfxManager.reset();
 		associations.clear();
 		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
+	}
+
+	@Override
+	public void onMouseClick(IGfxObject object) {	
+		if (object instanceof NetworkNode) {
+			NetworkNode networkNode = (NetworkNode) object;
+			InformationPopup popup = new InformationPopup();
+			popup.setData(networkNode.getText(), networkNode.getPacketsSent(), 
+					networkNode.getPacketsReceived(), networkNode.getkByteSent(),
+					networkNode.getkByteReceived());
+			popup.show();	
+		}
 	}
 
 }

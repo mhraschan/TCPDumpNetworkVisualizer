@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -39,7 +40,7 @@ import com.uh.nwvz.shared.dto.SimplePacketDTO;
 public class TCPDumpNetworkVisualizer implements EntryPoint,
 		PacketReceiveNotifier, IUploader.OnFinishUploaderHandler, LogListener {
 
-	private ListBox lbFlowMap = new ListBox();
+	//private ListBox lbFlowMap = new ListBox();
 	private Canvas cvGraph = null;
 	private Label lblPacketCount = new Label();
 	private ListBox lbPackets = new ListBox();
@@ -66,20 +67,25 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	public void onModuleLoad() {
 
 		// Attach the image viewer to the document
-		RootPanel.get("flow_map").add(lbFlowMap);
+		//RootPanel.get("flow_map").add(lbFlowMap);
 
 		// Create a new uploader panel and attach it to the document
 		MultiUploader defaultUploader = new MultiUploader();
-		FlowPanel flowPanel = new FlowPanel();
-		flowPanel.add(defaultUploader);
-		flowPanel.add(lblPacketCount);
-		flowPanel.add(lbPackets);
-		flowPanel.add(rtLog);
-		flowPanel.add(startButton);
-		flowPanel.add(stopButton);
-		flowPanel.add(tbCurrentPacket);
-		flowPanel.add(btnSetCurrentPacket);
-		RootPanel.get("default").add(flowPanel);
+		FlexTable flexTable = new FlexTable();
+		flexTable.setWidget(0, 0, new Label("Choose the TCP-Dump file to visualize: "));
+		flexTable.setWidget(0, 1, defaultUploader);
+		//flexTable.setWidget(1, 0, lblPacketCount);
+		//flowPanel.add(lblPacketCount);
+		//flowPanel.add(lbPackets);
+		flexTable.setWidget(1, 0, new Label("Log: "));
+		flexTable.setWidget(1, 1, rtLog);
+		FlowPanel fp = new FlowPanel();
+		fp.add(startButton);
+		fp.add(stopButton);
+		fp.add(tbCurrentPacket);
+		fp.add(btnSetCurrentPacket);
+		flexTable.setWidget(2, 1, fp);
+		RootPanel.get("default").add(flexTable);
 		
 		startButton.addClickHandler(new ClickHandler() {
 

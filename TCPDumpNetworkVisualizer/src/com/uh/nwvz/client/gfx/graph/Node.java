@@ -1,6 +1,7 @@
 package com.uh.nwvz.client.gfx.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -12,6 +13,7 @@ import com.google.gwt.canvas.dom.client.FillStrokeStyle;
 import com.google.gwt.canvas.dom.client.TextMetrics;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
 import com.uh.nwvz.client.gfx.commons.IGfxObject;
+import com.uh.nwvz.client.gfx.commons.MouseClickHandler;
 import com.uh.nwvz.client.gfx.commons.Vector;
 
 public class Node implements IGfxObject {
@@ -30,6 +32,8 @@ public class Node implements IGfxObject {
 	boolean isMouseOver = false;
 	
 	List<Association> associations = new ArrayList<Association>();
+	
+	private List<MouseClickHandler> mouseClickListeners = new ArrayList<MouseClickHandler>();
 	
 	public Node(Vector center, double radius, String text, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		this.center = center;
@@ -134,6 +138,23 @@ public class Node implements IGfxObject {
 
 	@Override
 	public void onMouseUp() {
+		if(isMouseDown) {
+			Iterator<MouseClickHandler> it = mouseClickListeners.iterator();
+			while (it.hasNext())
+				it.next().onMouseClick(this);
+		}
 		this.isMouseDown = false;
+	}
+	
+	public void addMouseClickHandler(MouseClickHandler handler) {
+		mouseClickListeners.add(handler);
+	}
+	
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 }
