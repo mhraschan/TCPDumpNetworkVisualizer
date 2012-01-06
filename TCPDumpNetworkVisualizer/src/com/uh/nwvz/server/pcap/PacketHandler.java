@@ -66,6 +66,10 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
 	private final Map<String, String> hostnames = new HashMap<String, String>();
 
+	private Date firstPacketDate;
+
+	private Date lastPacketDate;
+
 	@Override
 	public void nextPacket(PcapPacket packet, StringBuilder errbuf) {
 
@@ -73,6 +77,13 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
 		Date receiveDate = new Date(packet.getCaptureHeader()
 				.timestampInMillis());
+
+		if (firstPacketDate == null || receiveDate.before(firstPacketDate))
+			firstPacketDate = receiveDate;
+
+		if (lastPacketDate == null || receiveDate.after(lastPacketDate))
+			lastPacketDate = receiveDate;
+
 		int size = packet.getTotalSize();
 
 		JFlowKey key = packet.getState().getFlowKey();
@@ -113,7 +124,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 							ipResolver.toHashCode(ip4.destination()));
 					if (destHostname == null)
 						destHostname = "";
-					
+
 					hostnames.put(destIp, destHostname);
 				}
 
@@ -122,7 +133,7 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 				else {
 					srcHostname = ipResolver.resolveToName(ip4.source(),
 							ipResolver.toHashCode(ip4.source()));
-					
+
 					if (srcHostname == null)
 						srcHostname = "";
 					hostnames.put(srcIp, srcHostname);
@@ -199,6 +210,14 @@ public class PacketHandler implements PcapPacketHandler<StringBuilder> {
 
 	public long getFlowCount() {
 		return flowCount;
+	}
+
+	public Date getFirstPacketDate() {
+		return firstPacketDate;
+	}
+
+	public Date getLastPacketDate() {
+		return lastPacketDate;
 	}
 
 }

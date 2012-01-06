@@ -35,7 +35,6 @@ public class TCPDumpUploadServlet extends UploadAction {
 
 					StringBuilder errbuf = new StringBuilder();
 
-					System.out.println(System.getProperty("java.library.path"));
 					final Pcap pcap = Pcap.openOffline(file.getAbsolutePath(),
 							errbuf);
 					if (pcap == null) {
@@ -52,7 +51,15 @@ public class TCPDumpUploadServlet extends UploadAction {
 								Commons.SESSION_SIMPLE_PACKET_LIST,
 								SimplePacketConverter.convert(packetHandler
 										.getPackets()));
-						session.setAttribute(Commons.SESSION_PACKETS_SENT, 0);
+
+						session.setAttribute(
+								Commons.SESSION_TOTAL_PACKET_COUNT,
+								packetHandler.getPacketCount());
+
+						session.setAttribute(Commons.SESSION_FIRST_PACKET_TIME,
+								packetHandler.getFirstPacketDate().getTime());
+						session.setAttribute(Commons.SESSION_LAST_PACKET_TIME,
+								packetHandler.getLastPacketDate().getTime());
 
 						response = "Total packet count: "
 								+ packetHandler.getPacketCount();

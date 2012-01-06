@@ -1,103 +1,114 @@
 package com.uh.nwvz.client.network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.user.client.Timer;
+import com.uh.nwvz.client.PacketTransmissionServiceAsync;
 import com.uh.nwvz.client.commons.LogListener;
-import com.uh.nwvz.client.gfx.GfxManager;
+import com.uh.nwvz.client.commons.PacketReceiveNotifier;
+import com.uh.nwvz.client.commons.async.PacketTransferInfoAsyncCallback;
+import com.uh.nwvz.client.commons.async.PacketTransmissionAsyncCallback;
+import com.uh.nwvz.shared.dto.PacketInfoDTO;
+import com.uh.nwvz.shared.dto.PacketTransferInfoDTO;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
-public class PacketManager extends Timer {
+public class PacketManager implements PacketReceiveNotifier {
 
-	private final static int START_DELAY = 500;
+	private List<SimplePacketDTO> storedPackets = new ArrayList<SimplePacketDTO>();
 
-	private List<SimplePacketDTO> packets = new ArrayList<SimplePacketDTO>();
-
-	private int totalPacketCount = 0;
-
-	private int currentPacketCount = 0;
-
-	private int currentPacketKey = 0;
-
-	private boolean running = false;
-
-	private boolean initialized = false;
+	private PacketInfoDTO packetInfo = null;
 
 	private GraphBuilder graphBuilder;
 
-	private LogListener logListener; 
+	private LogListener logListener;
 
-	public PacketManager(GraphBuilder graphBuilder, LogListener logListener) {
+	private PacketTransmissionServiceAsync packetTransmissionSvc;
+
+	private PacketTransferInfoDTO packetTransferInfo;
+
+	private boolean transferActive = false;
+
+	private String clientIpAddress = "";
+
+	public PacketManager(GraphBuilder graphBuilder,
+			PacketTransmissionServiceAsync packetTransmissionSvc,
+			LogListener logListener) {
 		super();
 		this.graphBuilder = graphBuilder;
+		this.packetTransmissionSvc = packetTransmissionSvc;
 		this.logListener = logListener;
 	}
-	
+
 	public void setTime(int time) {
-		// load data
-		// build graph
-	}
+		// time is between 0 and 100
 
-	public void addPackets(SimplePacketDTO[] newPackets) {
-		for (SimplePacketDTO newPacket : newPackets)
-			packets.add(newPacket);
+		if (transferActive)
+			return;
 
-		currentPacketCount += newPackets.length;
-	}
+		if (packetInfo != null && time > 1) {
+			transferActive = true;
+			long totalTime = packetInfo.getLastPacketArrival()
+					- packetInfo.getFirstPacketArrival();
+			long reducedTime = (long) (totalTime * (((float) time) / 100));
+			long packetsBefore = packetInfo.getFirstPacketArrival()
+					+ reducedTime;
 
-	public boolean start() {
-		if (currentPacketCount > 0) {
-			if (!initialized) {
-				currentPacketKey = 0;
-				this.scheduleRepeating(START_DELAY);
-				initialized = true;
-			}
+			storedPackets.clear();
 
-			running = true;
-			return true;
+			packetTransmissionSvc.startPacketTransfer(packetsBefore,
+					new PacketTransferInfoAsyncCallback(this, logListener));
 		}
 
-		return false;
 	}
 
-	public void stop() {
-		running = false;
+	public PacketInfoDTO getPacketInfo() {
+		return packetInfo;
 	}
 
-	public void setCurrentPacket(int currentPacket) {
-		if (currentPacket <= currentPacketCount)
-			this.currentPacketKey = currentPacket;
+	public void setPacketInfo(PacketInfoDTO packetInfo) {
+		this.packetInfo = packetInfo;
 	}
 
-	public int getCurrentPacketCount() {
-		return currentPacketCount;
-	}
-
-	public int getCurrentPacketKey() {
-		return currentPacketKey;
-	}
-	
-	public void forceDrawPackets(int lastPacketKey) {
-		boolean wasRunning = running;
-		running = false;
-		
-		List<SimplePacketDTO> sublist = packets.subList(0, lastPacketKey);
-		graphBuilder.forcePackets(sublist);
-		
-		currentPacketKey = lastPacketKey;
-		running = wasRunning;
-	}
-	
 	@Override
-	public void run() {
-		if (running && currentPacketCount > 0 && currentPacketKey < currentPacketCount) {
-			SimplePacketDTO currentPacket = packets.get(currentPacketKey);
+	public void received(SimplePacketDTO[] packets) {
+		storedPackets.addAll(Arrays.asList(packets));
 
-			logListener.logInfo("Processing packet " + currentPacket.getPacketId());
-			graphBuilder.addNextPacket(currentPacket);
-			
-			currentPacketKey++;
+		if (storedPackets.size() < packetTransferInfo.getPacketCount()) {
+			packetTransmissionSvc
+					.nextPackets(new PacketTransmissionAsyncCallback(this,
+							logListener));
+		} else {
+			graphBuilder.setClientIpAddress(clientIpAddress);
+			graphBuilder.forcePackets(storedPackets);
+			transferActive = false;
 		}
 	}
+
+	@Override
+	public void receivedPacketInfo(PacketInfoDTO packetInfo) {
+		this.packetInfo = packetInfo;
+	}
+
+	@Override
+	public void receivedPacketTransferInfo(PacketTransferInfoDTO transferInfo) {
+		this.packetTransferInfo = transferInfo;
+
+		if (transferActive) {
+			storedPackets.clear();
+
+			packetTransmissionSvc
+					.nextPackets(new PacketTransmissionAsyncCallback(this,
+							logListener));
+		}
+	}
+
+	public String getClientIpAddress() {
+		return clientIpAddress;
+	}
+
+	public void setClientIpAddress(String clientIpAddress) {
+		this.clientIpAddress = clientIpAddress;
+	}
+
 }

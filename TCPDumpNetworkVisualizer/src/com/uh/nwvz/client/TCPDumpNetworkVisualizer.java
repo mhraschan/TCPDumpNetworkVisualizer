@@ -8,22 +8,16 @@ import gwtupload.client.MultiUploader;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.kiouri.sliderbar.client.event.BarValueChangedEvent;
 import com.kiouri.sliderbar.client.event.BarValueChangedHandler;
-import com.kiouri.sliderbar.client.view.SliderBarHorizontal;
 import com.uh.nwvz.client.commons.LogListener;
-import com.uh.nwvz.client.commons.PacketReceiveNotifier;
-import com.uh.nwvz.client.commons.async.PacketCountAsyncCallback;
+import com.uh.nwvz.client.commons.async.PacketInfoAsyncCallback;
 import com.uh.nwvz.client.components.LogTextArea;
 import com.uh.nwvz.client.components.TimeSlider;
 import com.uh.nwvz.client.gfx.CanvasEventManager;
@@ -32,25 +26,21 @@ import com.uh.nwvz.client.gfx.commons.Size;
 import com.uh.nwvz.client.network.GraphBuilder;
 import com.uh.nwvz.client.network.NetworkNodeFactory;
 import com.uh.nwvz.client.network.PacketManager;
-import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class TCPDumpNetworkVisualizer implements EntryPoint,
-		PacketReceiveNotifier, IUploader.OnFinishUploaderHandler, LogListener {
+		IUploader.OnFinishUploaderHandler, LogListener {
 
-	//private ListBox lbFlowMap = new ListBox();
+	// private ListBox lbFlowMap = new ListBox();
 	private Canvas cvGraph = null;
-	private Label lblPacketCount = new Label();
-	private ListBox lbPackets = new ListBox();
 	private LogTextArea rtLog = new LogTextArea();
-	private Button startButton = new Button("Start");
-	private Button stopButton = new Button("Stop");
-	private TextBox tbCurrentPacket = new TextBox();
-	private Button btnSetCurrentPacket = new Button("Set current packet");
 	private TimeSlider timeAxisSlider = new TimeSlider(100, "1000px");
+	private TextBox tbClientIp = new TextBox();
 	
+	final DialogBox errorBox = new DialogBox();
+
 	// timer refresh rate, in milliseconds
 	private final int refreshRate = 100;
 
@@ -67,52 +57,22 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	public void onModuleLoad() {
 
 		// Attach the image viewer to the document
-		//RootPanel.get("flow_map").add(lbFlowMap);
+		// RootPanel.get("flow_map").add(lbFlowMap);
 
 		// Create a new uploader panel and attach it to the document
 		MultiUploader defaultUploader = new MultiUploader();
 		FlexTable flexTable = new FlexTable();
-		flexTable.setWidget(0, 0, new Label("Choose the TCP-Dump file to visualize: "));
+		flexTable.setWidget(0, 0, new Label(
+				"Choose the TCP-Dump file to visualize: "));
 		flexTable.setWidget(0, 1, defaultUploader);
-		//flexTable.setWidget(1, 0, lblPacketCount);
-		//flowPanel.add(lblPacketCount);
-		//flowPanel.add(lbPackets);
+		// flexTable.setWidget(1, 0, lblPacketCount);
+		// flowPanel.add(lblPacketCount);
+		// flowPanel.add(lbPackets);
 		flexTable.setWidget(1, 0, new Label("Log: "));
 		flexTable.setWidget(1, 1, rtLog);
-		FlowPanel fp = new FlowPanel();
-		fp.add(startButton);
-		fp.add(stopButton);
-		fp.add(tbCurrentPacket);
-		fp.add(btnSetCurrentPacket);
-		flexTable.setWidget(2, 1, fp);
+		flexTable.setWidget(2, 0, new Label("Client-IP Address: "));
+		flexTable.setWidget(2, 1, tbClientIp);
 		RootPanel.get("default").add(flexTable);
-		
-		startButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				packetManager.start();
-			}
-			
-		});
-		
-		stopButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				packetManager.stop();
-			}
-			
-		});
-		
-		btnSetCurrentPacket.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				packetManager.forceDrawPackets(Integer.valueOf(tbCurrentPacket.getText()));
-			}
-			
-		});
 
 		// create Graphing Canvas
 		cvGraph = Canvas.createIfSupported();
@@ -121,20 +81,30 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 
 		// initialize event manager
 		CanvasEventManager.initCanvasEventManager(cvGraph);
-		NetworkNodeFactory.initNetworkNodeFactory(new Size(cvGraph.getCoordinateSpaceWidth(), cvGraph.getCoordinateSpaceHeight()));
+		NetworkNodeFactory
+				.initNetworkNodeFactory(new Size(cvGraph
+						.getCoordinateSpaceWidth(), cvGraph
+						.getCoordinateSpaceHeight()));
 
 		// initialize graphics manager
 		gfxManager = new GfxManager(cvGraph);
 		graphBuilder = new GraphBuilder(gfxManager);
-		packetManager = new PacketManager(graphBuilder, this);
-		
+		packetManager = new PacketManager(graphBuilder, packetTransmissionSvc,
+				this);
+
 		timeAxisSlider.addBarValueChangedHandler(new BarValueChangedHandler() {
 
 			@Override
 			public void onBarValueChanged(BarValueChangedEvent event) {
-				packetManager.setTime(event.getValue());	
+				if (tbClientIp.getText().isEmpty()) {
+					errorBox.setText("Client-IP is empty!");
+					//TODO: Show error box
+				} else {
+					packetManager.setClientIpAddress(tbClientIp.getText());
+					packetManager.setTime(event.getValue());
+				}
 			}
-			
+
 		});
 
 		RootPanel.get("graph_canvas").add(cvGraph);
@@ -167,17 +137,13 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 			rtLog.logInfo("File size " + info.size);
 			rtLog.logInfo("Server message " + info.message);
 
-			packetTransmissionSvc
-					.getTotalPacketCount(new PacketCountAsyncCallback(this,
-							this, packetTransmissionSvc));
+			uploader.setEnabled(false);
+
+			packetTransmissionSvc.getPacketInfo(new PacketInfoAsyncCallback(
+					packetManager, this));
 		} else {
 			rtLog.logError("File-upload failed");
 		}
-	}
-
-	@Override
-	public void received(SimplePacketDTO[] packets) {
-		packetManager.addPackets(packets);
 	}
 
 	@Override

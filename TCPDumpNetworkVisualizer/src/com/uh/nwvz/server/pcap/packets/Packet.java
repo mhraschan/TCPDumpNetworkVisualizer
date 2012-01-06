@@ -95,6 +95,7 @@ public class Packet {
 		simplePacket.setFlowId(flowId);
 		simplePacket.setSize(size);
 		simplePacket.setType(SimplePacketType.UNKOWN);
+		simplePacket.setReceiveDate(receiveDate);
 		
 		if (subPacket != null) {
 			subPacket.fillSimplePacket(simplePacket);

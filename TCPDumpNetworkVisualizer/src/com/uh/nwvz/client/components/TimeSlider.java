@@ -18,7 +18,7 @@ public class TimeSlider extends SliderBarHorizontal {
         setMoreWidget(new Image(images.more()));
         setDragWidget(new Image(images.drag()));
         this.setWidth(width);
-        this.setMaxValue(maxValue);         
+        this.setMaxValue(maxValue);
     }
             
     interface TimeSliderImages extends ClientBundle {

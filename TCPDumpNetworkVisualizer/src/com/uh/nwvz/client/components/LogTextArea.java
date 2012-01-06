@@ -19,11 +19,12 @@ public class LogTextArea extends RichTextArea {
 	public LogTextArea() {
 		super();
 		setEnabled(false);
+		setHTML("");
 	}
 
 	private void appendText(String message, String color) {
 		String html = this.getHTML();
-		html += "<br/><font color=\"#" + color + "\">" + message + "</font>";
+		html = "<br/><font color=\"#" + color + "\">" + message + "</font>" + html;
 		this.setHTML(html);
 	}
 

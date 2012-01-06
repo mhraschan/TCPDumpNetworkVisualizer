@@ -15,20 +15,16 @@ import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class GraphBuilder implements MouseClickHandler {
 
-	private final static String LOCALHOST = "10.0.2.15";
-
 	private Map<Integer, Association> associations = new HashMap<Integer, Association>();
 
 	private NetworkNode homeNode;
 
 	private GfxManager gfxManager;
 
+	private String clientIpAddress;
+
 	public GraphBuilder(GfxManager gfxManager) {
 		this.gfxManager = gfxManager;
-
-		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
-		gfxManager.addNode(homeNode);
-		homeNode.addMouseClickHandler(this);
 	}
 
 	private boolean addPacket(SimplePacketDTO packet) {
@@ -39,10 +35,12 @@ public class GraphBuilder implements MouseClickHandler {
 			String src = PcapUtil.ip(packet.getSource());
 			Node newNode = null;
 
-			if (!dest.equals(LOCALHOST)) {
-				newNode = NetworkNodeFactory.getNetworkNodeFactory().createHTTPNode(dest);
+			if (!dest.equals(clientIpAddress)) {
+				newNode = NetworkNodeFactory.getNetworkNodeFactory()
+						.createHTTPNode(dest);
 			} else {
-				newNode = NetworkNodeFactory.getNetworkNodeFactory().createHTTPNode(src);
+				newNode = NetworkNodeFactory.getNetworkNodeFactory()
+						.createHTTPNode(src);
 			}
 
 			newNode.addMouseClickHandler(this);
@@ -64,6 +62,10 @@ public class GraphBuilder implements MouseClickHandler {
 
 	public void forcePackets(List<SimplePacketDTO> packets) {
 		reset();
+		
+		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
+		gfxManager.addNode(homeNode);
+		
 		for (SimplePacketDTO packet : packets)
 			addPacket(packet);
 		gfxManager.forceLayout();
@@ -76,15 +78,23 @@ public class GraphBuilder implements MouseClickHandler {
 	}
 
 	@Override
-	public void onMouseClick(IGfxObject object) {	
+	public void onMouseClick(IGfxObject object) {
 		if (object instanceof NetworkNode) {
 			NetworkNode networkNode = (NetworkNode) object;
 			InformationPopup popup = new InformationPopup();
-			popup.setData(networkNode.getText(), networkNode.getPacketsSent(), 
-					networkNode.getPacketsReceived(), networkNode.getkByteSent(),
-					networkNode.getkByteReceived());
-			popup.show();	
+			popup.setData(networkNode.getText(), networkNode.getPacketsSent(),
+					networkNode.getPacketsReceived(),
+					networkNode.getkByteSent(), networkNode.getkByteReceived());
+			popup.show();
 		}
+	}
+
+	public String getClientIpAddress() {
+		return clientIpAddress;
+	}
+
+	public void setClientIpAddress(String clientIpAddress) {
+		this.clientIpAddress = clientIpAddress;
 	}
 
 }
