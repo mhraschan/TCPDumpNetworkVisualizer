@@ -1,6 +1,7 @@
 package com.uh.nwvz.client.network;
 
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.user.client.Random;
 import com.uh.nwvz.client.gfx.ColorProvider;
 import com.uh.nwvz.client.gfx.commons.Size;
 import com.uh.nwvz.client.gfx.commons.Vector;
@@ -14,16 +15,22 @@ public class NetworkNodeFactory {
 	// for precalculation of positions
 	private double currentAngle = 0;
 	private double radius = 0;
+	private int nodeCount = 0;
 	
 	private static NetworkNodeFactory singleton = null;
 	
 	private NetworkNodeFactory(Size size) {
 		this.canvasSize = size;
-		this.radius = Math.sqrt(size.getWidth()*size.getWidth() + size.getHeight() * size.getHeight()) / 7;
+		this.radius = Math.sqrt(size.getWidth()*size.getWidth() + size.getHeight() * size.getHeight()) / 6;
 	}
 	
 	private NetworkNodeFactory() {
 		
+	}
+	
+	public void setNodeCount(int nodes) {
+		this.nodeCount = nodes;
+		ANGLE_INCREMENT = 2 * Math.PI / nodes;
 	}
 	
 	public static void initNetworkNodeFactory(Size canvasSize) {
@@ -44,11 +51,12 @@ public class NetworkNodeFactory {
 	}
 	
 	private Vector getCenterPosition() {
-		/*Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
-		Vector rVec = new Vector(radius * Math.cos(currentAngle), radius * Math.sin(currentAngle));
-		center.add(rVec);*/
-		Vector center = new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight());
-		currentAngle += ANGLE_INCREMENT;
+		Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
+		double r = this.radius * (0.5 + 0.8*Random.nextDouble());
+		Vector rVec = new Vector(r * Math.cos(currentAngle), r * Math.sin(currentAngle));
+		center.add(rVec);
+		//Vector center = new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight());
+		currentAngle += (ANGLE_INCREMENT + 2*Random.nextDouble()/nodeCount);
 		return center;
 	}
 	

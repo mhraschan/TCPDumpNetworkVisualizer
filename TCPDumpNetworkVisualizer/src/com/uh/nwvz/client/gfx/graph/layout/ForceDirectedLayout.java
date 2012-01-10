@@ -13,10 +13,10 @@ public class ForceDirectedLayout implements ILayout {
 	private Size canvasSize = new Size(0,0);
 	private Graph graph = null;
 	
-	private final double GRAVITY_CONSTANT = 8E-9;			// determines the force between nodes altogether
-	private final double SPRING_CONSTANT = -3E-7;			// determines the force between connected nodes
-	private final double MAX_KINETIC_ENERGY = 1E-5;			// constant to stop iterative process
-	private final double DAMPING_CONSTANT = 0.9; 			// damping constant of the adaption process
+	private final double GRAVITY_CONSTANT = 1E-8;			// determines the force between nodes altogether
+	private final double SPRING_CONSTANT = -4E-7;			// determines the force between connected nodes
+	private final double MAX_KINETIC_ENERGY = 8E-4;			// constant to stop iterative process
+	private final double DAMPING_CONSTANT = 0.85; 			// damping constant of the adaption process
 	private final double TIMESTEP = 1;  
 	
 

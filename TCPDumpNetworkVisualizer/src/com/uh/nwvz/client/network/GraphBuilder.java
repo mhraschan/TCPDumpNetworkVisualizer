@@ -122,6 +122,8 @@ public class GraphBuilder implements MouseClickHandler {
 	public void forceNodes(List<com.uh.nwvz.shared.dto.NetworkNodeDTO> nodes) {
 		reset();
 
+		NetworkNodeFactory.getNetworkNodeFactory().setNodeCount(nodes.size()-1);
+		
 		sizeSum = 0;
 		for (com.uh.nwvz.shared.dto.NetworkNodeDTO node : nodes)
 			addNode(node);
@@ -144,7 +146,7 @@ public class GraphBuilder implements MouseClickHandler {
 				node.setRadius(node.getRadius()*1.5);
 		}
 
-		gfxManager.forceLayout();
+		//gfxManager.forceLayout();
 	}
 
 	private void reset() {
