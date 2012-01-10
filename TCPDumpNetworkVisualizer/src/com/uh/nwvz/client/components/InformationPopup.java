@@ -15,6 +15,7 @@ public class InformationPopup extends PopupPanel {
       infoTable.setText(2, 0, "Packets received:");
       infoTable.setText(3, 0, "KByte sent:");
       infoTable.setText(4, 0, "KByte received:");
+      infoTable.setText(5, 0, "Protocols: ");
       
       setWidget(infoTable);
 	
@@ -23,12 +24,13 @@ public class InformationPopup extends PopupPanel {
     }
 	
 	public void setData(String host, int packetsSent, int packetsReceived, 
-			long kbSent, long kbReceived) {
+			long kbSent, long kbReceived, String protocols) {
 		
 		infoTable.setText(0, 1, host);
 		infoTable.setText(1, 1, String.valueOf(packetsSent));
 		infoTable.setText(2, 1, String.valueOf(packetsReceived));
 		infoTable.setText(3, 1, String.valueOf(kbSent));
 		infoTable.setText(4, 1, String.valueOf(kbReceived));
+	    infoTable.setText(5, 1, protocols);
 	}
 }

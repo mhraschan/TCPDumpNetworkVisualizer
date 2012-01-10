@@ -2,7 +2,6 @@ package com.uh.nwvz.client.network;
 
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.uh.nwvz.client.gfx.ColorProvider;
-import com.uh.nwvz.client.gfx.ColorProvider.Protocol;
 import com.uh.nwvz.client.gfx.commons.Size;
 import com.uh.nwvz.client.gfx.commons.Vector;
 import com.uh.nwvz.client.gfx.graph.Node;
@@ -44,14 +43,43 @@ public class NetworkNodeFactory {
 				ColorProvider.getMouseOverColor(Protocol.LOCALHOST), ColorProvider.getClickColor(Protocol.LOCALHOST));
 	}
 	
-	public NetworkNode createHTTPNode(String name) {
-		Vector center = new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight());
+	private Vector getCenterPosition() {
 		/*Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
 		Vector rVec = new Vector(radius * Math.cos(currentAngle), radius * Math.sin(currentAngle));
 		center.add(rVec);*/
+		Vector center = new Vector(Math.random()*canvasSize.getWidth(),Math.random()*canvasSize.getHeight());
 		currentAngle += ANGLE_INCREMENT;
-		return new NetworkNode(center, 20, name, ColorProvider.getNormalColor(Protocol.HTTP), 
+		return center;
+	}
+	
+	public NetworkNode createHTTPNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.HTTP), 
 				ColorProvider.getMouseOverColor(Protocol.HTTP), ColorProvider.getClickColor(Protocol.HTTP));
+	}
+	
+	public NetworkNode createMixedNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.MIXED), 
+				ColorProvider.getMouseOverColor(Protocol.MIXED), ColorProvider.getClickColor(Protocol.MIXED));
+	}
+	
+	public NetworkNode createOtherNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.OTHER), 
+				ColorProvider.getMouseOverColor(Protocol.OTHER), ColorProvider.getClickColor(Protocol.OTHER));
+	}
+	
+	public NetworkNode createTCPNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.TCP), 
+				ColorProvider.getMouseOverColor(Protocol.TCP), ColorProvider.getClickColor(Protocol.TCP));
+	}
+	
+	public NetworkNode createUDPNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.UDP), 
+				ColorProvider.getMouseOverColor(Protocol.UDP), ColorProvider.getClickColor(Protocol.UDP));
+	}
+	
+	public NetworkNode createICMPNode(String name) {
+		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.ICMP), 
+				ColorProvider.getMouseOverColor(Protocol.ICMP), ColorProvider.getClickColor(Protocol.ICMP));
 	}
 
 }

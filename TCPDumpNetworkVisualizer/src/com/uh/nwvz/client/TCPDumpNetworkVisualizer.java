@@ -98,7 +98,7 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 			public void onBarValueChanged(BarValueChangedEvent event) {
 				if (tbClientIp.getText().isEmpty()) {
 					errorBox.setText("Client-IP is empty!");
-					//TODO: Show error box
+					//errorBox.show();
 				} else {
 					packetManager.setClientIpAddress(tbClientIp.getText());
 					packetManager.setTime(event.getValue());

@@ -1,8 +1,13 @@
 package com.uh.nwvz.client.network;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.uh.nwvz.client.gfx.commons.Vector;
 import com.uh.nwvz.client.gfx.graph.Node;
+import com.uh.nwvz.shared.dto.NetworkNodeDTO;
 
 public class NetworkNode extends Node {
 	
@@ -10,13 +15,32 @@ public class NetworkNode extends Node {
 	private int packetsSent = 0;
 	private long kByteReceived = 0;
 	private long kByteSent = 0;
+	private EnumSet<Protocol> protocols = EnumSet.noneOf(Protocol.class);
+
+	private NetworkNodeDTO nodeData = null;
 
 	public NetworkNode(Vector center, double radius, String text, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		super(center, radius, text, colorNormal, colorMouseOver, colorMouseDown);
 	}
 	
+	public EnumSet<Protocol> getProtocols() {
+		return protocols;
+	}
+
+	public void setProtocols(EnumSet<Protocol> protocols) {
+		this.protocols = protocols;
+	}
+	
 	public int getPacketsReceived() {
 		return packetsReceived;
+	}
+
+	public NetworkNodeDTO getNodeData() {
+		return nodeData;
+	}
+
+	public void setNodeData(NetworkNodeDTO nodeData) {
+		this.nodeData = nodeData;
 	}
 
 	public void setPacketsReceived(int packetsReceived) {

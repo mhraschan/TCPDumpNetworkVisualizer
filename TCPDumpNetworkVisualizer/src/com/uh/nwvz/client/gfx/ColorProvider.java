@@ -2,15 +2,15 @@ package com.uh.nwvz.client.gfx;
 
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.uh.nwvz.client.gfx.commons.Colors;
+import com.uh.nwvz.client.network.Protocol;
 
 public class ColorProvider {
-	public enum Protocol {HTTP, DNS, LOCALHOST, TCP, UDP, MIXED, OTHER};
-	
+
 	public static CssColor getNormalColor(Protocol protocol) {
 		switch (protocol) {
 		case HTTP: 
 			return Colors.LightRedNormal;
-		case DNS:
+		case ICMP:
 			return Colors.LightBlueNormal;
 		case MIXED:
 			return Colors.LightGreenNormal;
