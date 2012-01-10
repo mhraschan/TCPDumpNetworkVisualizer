@@ -70,6 +70,10 @@ public class Node implements IGfxObject {
 		return radius;
 	}
 	
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+	
 	public void setCenter(Vector center) {
 		this.center = center;
 	}

@@ -26,6 +26,8 @@ public class GraphBuilder implements MouseClickHandler {
 	private GfxManager gfxManager;
 
 	private String clientIpAddress;
+	
+	private long sizeSum = 0;
 
 	public GraphBuilder(GfxManager gfxManager) {
 		this.gfxManager = gfxManager;
@@ -66,11 +68,14 @@ public class GraphBuilder implements MouseClickHandler {
 			protocols.add(convertPacketTypeToProtocol(packet.getType()));
 			sentBytes += packet.getSize();
 		}
+
 		
 		NetworkNode netNode = null;
 		if (nodeName.equals(clientIpAddress)) {
 			netNode = homeNode;
 		} else {
+			sizeSum += sentBytes;
+			sizeSum += receivedBytes;
 			if (protocols.size() == 1) {
 				switch(protocols.iterator().next()) 
 				{
@@ -117,8 +122,27 @@ public class GraphBuilder implements MouseClickHandler {
 	public void forceNodes(List<com.uh.nwvz.shared.dto.NetworkNodeDTO> nodes) {
 		reset();
 
+		sizeSum = 0;
 		for (com.uh.nwvz.shared.dto.NetworkNodeDTO node : nodes)
 			addNode(node);
+		
+		float avg = sizeSum / nodes.size();
+		for (NetworkNode node : this.nodes.values()) {
+			if (node == homeNode)
+				continue;
+			
+			long sum = (node.getkByteSent() + node.getkByteReceived())*1024;
+			if (sum <= 0.5 * avg)
+				node.setRadius(node.getRadius()*0.65);
+			else if (sum < 0.8 * avg)
+				node.setRadius(node.getRadius()*0.8);
+			else if (sum < 1.5 * avg)
+				node.setRadius(node.getRadius());
+			else if (sum < 2 * avg)
+				node.setRadius(node.getRadius()*1.25);
+			else
+				node.setRadius(node.getRadius()*1.5);
+		}
 
 		gfxManager.forceLayout();
 	}
