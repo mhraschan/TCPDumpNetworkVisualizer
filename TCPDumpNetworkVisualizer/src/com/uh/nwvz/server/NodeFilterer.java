@@ -2,21 +2,22 @@ package com.uh.nwvz.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.uh.nwvz.shared.dto.NetworkNodeDTO;
 import com.uh.nwvz.shared.dto.SimpleIPPacket;
 
 public class NodeFilterer {
 
-	private List<NetworkNodeDTO> nodes;
+	private Map<String, NetworkNodeDTO> nodes;
 
 	private List<NetworkNodeDTO> filteredNodes = new ArrayList<NetworkNodeDTO>();
 
-	private long nodeCount = 0;
+	private int nodeCount = 0;
 
-	private long packetCount = 0;
+	private int packetCount = 0;
 
-	public NodeFilterer(List<NetworkNodeDTO> nodes) {
+	public NodeFilterer(Map<String, NetworkNodeDTO> nodes) {
 		super();
 		this.nodes = nodes;
 	}
@@ -25,17 +26,16 @@ public class NodeFilterer {
 		return filteredNodes;
 	}
 
-	public long getNodeCount() {
+	public int getNodeCount() {
 		return nodeCount;
 	}
 
-	public long getPacketCount() {
+	public int getPacketCount() {
 		return packetCount;
 	}
 
 	public void nodesBefore(long date) {
-
-		for (NetworkNodeDTO node : nodes) {
+		for (NetworkNodeDTO node : nodes.values()) {
 			if (node.getCreationDate() <= date) {
 				nodeCount++;
 				NetworkNodeDTO newNode = new NetworkNodeDTO(node.getIp(),
@@ -56,8 +56,9 @@ public class NodeFilterer {
 					} else
 						break;
 				}
-			} else
-				break;
+				
+				filteredNodes.add(newNode);
+			}
 		}
 	}
 

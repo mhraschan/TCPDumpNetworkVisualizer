@@ -1,6 +1,7 @@
 package com.uh.nwvz.server;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,7 +42,7 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 
 		if (session != null) {
 			int nodesTransferred = (Integer) session
-					.getAttribute(Commons.SESSION_CURRENT_TRANSFERED_PACKETS);
+					.getAttribute(Commons.SESSION_CURRENT_TRANSFERED_NODES);
 			int totalNodesToTransfer = (Integer) session
 					.getAttribute(Commons.SESSION_NODES_TO_TRANSFER);
 
@@ -51,10 +52,10 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 			List<NetworkNodeDTO> nodes = ((List<NetworkNodeDTO>) session
 					.getAttribute(Commons.SESSION_NODE_LIST_TO_TRANSFER));
 
-			session.setAttribute(Commons.SESSION_CURRENT_TRANSFERED_PACKETS,
+			session.setAttribute(Commons.SESSION_CURRENT_TRANSFERED_NODES,
 					nodesTransferred + 1);
 
-			return nodes.get(nodesTransferred + 1);
+			return nodes.get(nodesTransferred);
 		}
 
 		return null;
@@ -68,16 +69,14 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 		if (session != null) {
 			session.setAttribute(Commons.SESSION_CURRENT_TRANSFERED_NODES, 0);
 
-			Long firstPacketTime = (Long) session
-					.getAttribute(Commons.SESSION_FIRST_PACKET_TIME);
-			Long lastPacketTime = (Long) session
-					.getAttribute(Commons.SESSION_LAST_PACKET_TIME);
-
-			if (endDate > lastPacketTime || endDate < firstPacketTime) {
+			PacketInfoDTO packetInfo = (PacketInfoDTO) session
+					.getAttribute(Commons.SESSION_PACKET_INFO);
+			
+			if (endDate > packetInfo.getLastPacketArrival() || endDate < packetInfo.getFirstPacketArrival()) {
 				return null;
 			}
 
-			List<NetworkNodeDTO> packets = ((List<NetworkNodeDTO>) session
+			Map<String, NetworkNodeDTO> packets = ((Map<String, NetworkNodeDTO>) session
 					.getAttribute(Commons.SESSION_NODE_LIST));
 
 			NodeFilterer filt = new NodeFilterer(packets);
@@ -87,7 +86,7 @@ public class PacketTransmissionServiceImpl extends RemoteServiceServlet
 					filt.getFilteredNodes());
 			session.setAttribute(Commons.SESSION_NODES_TO_TRANSFER,
 					filt.getNodeCount());
-
+			
 			return new PacketTransferInfoDTO(filt.getNodeCount(),
 					filt.getPacketCount(), false);
 		}

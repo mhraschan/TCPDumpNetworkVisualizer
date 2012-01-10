@@ -121,6 +121,9 @@ public class SimplePacketHandler implements PcapPacketHandler<StringBuilder> {
 				simplePacket.setSourceHostname(getHostname(ip6.source()));
 			}
 
+			String sIp = PcapUtil.ip(simplePacket.getSrcIpAddr());
+			String dIp = PcapUtil.ip(simplePacket.getDestIpAddr());
+
 			if (packet.hasHeader(tcp)) {
 				simplePacket.setType(SimplePacketType.TCP);
 
@@ -146,23 +149,20 @@ public class SimplePacketHandler implements PcapPacketHandler<StringBuilder> {
 
 			// Check if theres already a node with the given ip-addresses
 
-			if (!nodes.containsKey(simplePacket.getSrcIpAddr())) {
-				nodes.put(PcapUtil.ip(simplePacket.getSrcIpAddr()),
-						new NetworkNodeDTO(simplePacket.getSrcIpAddr(),
-								simplePacket.getReceiveDate()));
+			if (!nodes.containsKey(sIp)) {
+				nodes.put(sIp, new NetworkNodeDTO(simplePacket.getSrcIpAddr(),
+						simplePacket.getReceiveDate()));
 				nodeCount++;
 			}
 
-			if (!nodes.containsKey(simplePacket.getDestIpAddr())) {
-				nodes.put(PcapUtil.ip(simplePacket.getDestIpAddr()),
-						new NetworkNodeDTO(simplePacket.getDestIpAddr(),
-								simplePacket.getReceiveDate()));
+			if (!nodes.containsKey(dIp)) {
+				nodes.put(dIp, new NetworkNodeDTO(simplePacket.getDestIpAddr(),
+						simplePacket.getReceiveDate()));
 				nodeCount++;
 			}
 
-			nodes.get(PcapUtil.ip(simplePacket.getSrcIpAddr())).addSentPacket(simplePacket);
-			nodes.get(PcapUtil.ip(simplePacket.getDestIpAddr())).addReceivedPacket(
-					simplePacket);
+			nodes.get(sIp).addSentPacket(simplePacket);
+			nodes.get(dIp).addReceivedPacket(simplePacket);
 		}
 	}
 
