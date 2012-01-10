@@ -15,16 +15,38 @@ public class PacketInfoDTO implements Serializable {
 
 	private Long totalPacketCount;
 
+	private Long tcpPacketCount;
+
+	private Long nodeCount;
+
 	public PacketInfoDTO() {
 		super();
 	}
 
+	public Long getTcpPacketCount() {
+		return tcpPacketCount;
+	}
+
+	public void setTcpPacketCount(Long tcpPacketCount) {
+		this.tcpPacketCount = tcpPacketCount;
+	}
+
+	public Long getNodeCount() {
+		return nodeCount;
+	}
+
+	public void setNodeCount(Long nodeCount) {
+		this.nodeCount = nodeCount;
+	}
+
 	public PacketInfoDTO(Long firstPacketArrival, Long lastPacketArrival,
-			Long totalPacketCount) {
+			Long totalPacketCount, Long tcpPacketCount, Long nodeCount) {
 		super();
 		this.firstPacketArrival = firstPacketArrival;
 		this.lastPacketArrival = lastPacketArrival;
 		this.totalPacketCount = totalPacketCount;
+		this.tcpPacketCount = tcpPacketCount;
+		this.nodeCount = nodeCount;
 	}
 
 	public Long getFirstPacketArrival() {

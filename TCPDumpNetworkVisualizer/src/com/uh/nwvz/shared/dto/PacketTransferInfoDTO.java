@@ -9,6 +9,8 @@ public class PacketTransferInfoDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 4280923248414698971L;
 
+	private long nodeCount;
+
 	private long packetCount;
 
 	private boolean finished;
@@ -17,8 +19,10 @@ public class PacketTransferInfoDTO implements Serializable {
 		super();
 	}
 
-	public PacketTransferInfoDTO(long packetCount, boolean finished) {
+	public PacketTransferInfoDTO(long nodeCount, long packetCount,
+			boolean finished) {
 		super();
+		this.nodeCount = nodeCount;
 		this.packetCount = packetCount;
 		this.finished = finished;
 	}
@@ -37,6 +41,14 @@ public class PacketTransferInfoDTO implements Serializable {
 
 	public void setPacketCount(long packetCount) {
 		this.packetCount = packetCount;
+	}
+
+	public long getNodeCount() {
+		return nodeCount;
+	}
+
+	public void setNodeCount(long nodeCount) {
+		this.nodeCount = nodeCount;
 	}
 
 }

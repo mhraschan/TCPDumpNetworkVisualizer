@@ -1,21 +1,20 @@
 package com.uh.nwvz.client.network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.uh.nwvz.client.PacketTransmissionServiceAsync;
 import com.uh.nwvz.client.commons.LogListener;
 import com.uh.nwvz.client.commons.PacketReceiveNotifier;
+import com.uh.nwvz.client.commons.async.NetworkNodeTransmissionAsyncCallback;
 import com.uh.nwvz.client.commons.async.PacketTransferInfoAsyncCallback;
-import com.uh.nwvz.client.commons.async.PacketTransmissionAsyncCallback;
 import com.uh.nwvz.shared.dto.PacketInfoDTO;
 import com.uh.nwvz.shared.dto.PacketTransferInfoDTO;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class PacketManager implements PacketReceiveNotifier {
 
-	private List<SimplePacketDTO> storedPackets = new ArrayList<SimplePacketDTO>();
+	private List<com.uh.nwvz.shared.dto.NetworkNodeDTO> storedNodes = new ArrayList<com.uh.nwvz.shared.dto.NetworkNodeDTO>();
 
 	private PacketInfoDTO packetInfo = null;
 
@@ -54,7 +53,7 @@ public class PacketManager implements PacketReceiveNotifier {
 			long packetsBefore = packetInfo.getFirstPacketArrival()
 					+ reducedTime;
 
-			storedPackets.clear();
+			storedNodes.clear();
 
 			packetTransmissionSvc.startPacketTransfer(packetsBefore,
 					new PacketTransferInfoAsyncCallback(this, logListener));
@@ -72,17 +71,7 @@ public class PacketManager implements PacketReceiveNotifier {
 
 	@Override
 	public void received(SimplePacketDTO[] packets) {
-		storedPackets.addAll(Arrays.asList(packets));
-
-		if (storedPackets.size() < packetTransferInfo.getPacketCount()) {
-			packetTransmissionSvc
-					.nextPackets(new PacketTransmissionAsyncCallback(this,
-							logListener));
-		} else {
-			graphBuilder.setClientIpAddress(clientIpAddress);
-			graphBuilder.forcePackets(storedPackets);
-			transferActive = false;
-		}
+		// not implemented
 	}
 
 	@Override
@@ -95,10 +84,10 @@ public class PacketManager implements PacketReceiveNotifier {
 		this.packetTransferInfo = transferInfo;
 
 		if (transferActive) {
-			storedPackets.clear();
+			storedNodes.clear();
 
 			packetTransmissionSvc
-					.nextPackets(new PacketTransmissionAsyncCallback(this,
+					.nextNode(new NetworkNodeTransmissionAsyncCallback(this,
 							logListener));
 		}
 	}
@@ -109,6 +98,21 @@ public class PacketManager implements PacketReceiveNotifier {
 
 	public void setClientIpAddress(String clientIpAddress) {
 		this.clientIpAddress = clientIpAddress;
+	}
+
+	@Override
+	public void receivedNode(com.uh.nwvz.shared.dto.NetworkNodeDTO node) {
+		storedNodes.add(node);
+
+		if (storedNodes.size() < packetTransferInfo.getNodeCount()) {
+			packetTransmissionSvc
+					.nextNode(new NetworkNodeTransmissionAsyncCallback(this,
+							logListener));
+		} else {
+			graphBuilder.setClientIpAddress(clientIpAddress);
+			graphBuilder.forceNodes(storedNodes);
+			transferActive = false;
+		}
 	}
 
 }

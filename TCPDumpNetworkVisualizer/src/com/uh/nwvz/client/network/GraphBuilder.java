@@ -9,13 +9,14 @@ import com.uh.nwvz.client.gfx.GfxManager;
 import com.uh.nwvz.client.gfx.commons.IGfxObject;
 import com.uh.nwvz.client.gfx.commons.MouseClickHandler;
 import com.uh.nwvz.client.gfx.graph.Association;
-import com.uh.nwvz.client.gfx.graph.Node;
 import com.uh.nwvz.shared.PcapUtil;
 import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public class GraphBuilder implements MouseClickHandler {
 
 	private Map<Integer, Association> associations = new HashMap<Integer, Association>();
+
+	private Map<String, NetworkNode> nodes = new HashMap<String, NetworkNode>();
 
 	private NetworkNode homeNode;
 
@@ -29,11 +30,13 @@ public class GraphBuilder implements MouseClickHandler {
 
 	private boolean addPacket(SimplePacketDTO packet) {
 		Association ass = associations.get(packet.getFlowId());
+		String dest = PcapUtil.ip(packet.getDestination());
+		String src = PcapUtil.ip(packet.getSource());
+
+		System.out.println(src + " => " + dest + " : " + packet.getFlowId());
 
 		if (ass == null) {
-			String dest = PcapUtil.ip(packet.getDestination());
-			String src = PcapUtil.ip(packet.getSource());
-			Node newNode = null;
+			NetworkNode newNode = null;
 
 			if (!dest.equals(clientIpAddress)) {
 				newNode = NetworkNodeFactory.getNetworkNodeFactory()
@@ -48,11 +51,28 @@ public class GraphBuilder implements MouseClickHandler {
 			gfxManager.addNode(newNode);
 			gfxManager.addAssociation(ass);
 			associations.put(packet.getFlowId(), ass);
+			nodes.put(newNode.getText(), newNode);
 			return true;
+		} else {
+			NetworkNode node = null;
+			if (!dest.equals(clientIpAddress)) {
+				node = nodes.get(dest);
+			} else {
+				node = nodes.get(src);
+			}
+
+			if (node != null) {
+				node.addPacketReceived();
+				return true;
+			}
+
 		}
 
 		return false;
-		// TODO: Add packet to association
+	}
+
+	private boolean addNode(com.uh.nwvz.shared.dto.NetworkNodeDTO node) {
+		return false;
 	}
 
 	public void addNextPacket(SimplePacketDTO packet) {
@@ -62,19 +82,27 @@ public class GraphBuilder implements MouseClickHandler {
 
 	public void forcePackets(List<SimplePacketDTO> packets) {
 		reset();
-		
-		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
-		gfxManager.addNode(homeNode);
-		
+
 		for (SimplePacketDTO packet : packets)
 			addPacket(packet);
 		gfxManager.forceLayout();
 	}
 
-	public void reset() {
+	public void forceNodes(List<com.uh.nwvz.shared.dto.NetworkNodeDTO> nodes) {
+		reset();
+
+		for (com.uh.nwvz.shared.dto.NetworkNodeDTO node : nodes)
+			addNode(node);
+
+		gfxManager.forceLayout();
+	}
+
+	private void reset() {
 		gfxManager.reset();
 		associations.clear();
+		nodes.clear();
 		homeNode = NetworkNodeFactory.getNetworkNodeFactory().createHomeNode();
+		gfxManager.addNode(homeNode);
 	}
 
 	@Override

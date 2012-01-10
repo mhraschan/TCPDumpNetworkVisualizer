@@ -23,7 +23,7 @@ public class InformationPopup extends PopupPanel {
     }
 	
 	public void setData(String host, int packetsSent, int packetsReceived, 
-			int kbSent, int kbReceived) {
+			long kbSent, long kbReceived) {
 		
 		infoTable.setText(0, 1, host);
 		infoTable.setText(1, 1, String.valueOf(packetsSent));

@@ -1,9 +1,9 @@
 package com.uh.nwvz.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.uh.nwvz.shared.dto.NetworkNodeDTO;
 import com.uh.nwvz.shared.dto.PacketInfoDTO;
 import com.uh.nwvz.shared.dto.PacketTransferInfoDTO;
-import com.uh.nwvz.shared.dto.SimplePacketDTO;
 
 public interface PacketTransmissionServiceAsync {
 
@@ -12,6 +12,6 @@ public interface PacketTransmissionServiceAsync {
 	void startPacketTransfer(long endDate,
 			AsyncCallback<PacketTransferInfoDTO> callback);
 
-	void nextPackets(AsyncCallback<SimplePacketDTO[]> callback);
+	void nextNode(AsyncCallback<NetworkNodeDTO> callback);
 
 }

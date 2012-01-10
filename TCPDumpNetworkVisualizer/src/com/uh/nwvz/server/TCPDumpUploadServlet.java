@@ -15,9 +15,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.jnetpcap.Pcap;
 
 import com.uh.nwvz.server.common.Commons;
-import com.uh.nwvz.server.pcap.PacketHandler;
-import com.uh.nwvz.server.pcap.SimplePacketConverter;
+import com.uh.nwvz.server.pcap.SimplePacketHandler;
 import com.uh.nwvz.shared.PcapException;
+import com.uh.nwvz.shared.dto.PacketInfoDTO;
 
 public class TCPDumpUploadServlet extends UploadAction {
 
@@ -40,29 +40,30 @@ public class TCPDumpUploadServlet extends UploadAction {
 					if (pcap == null) {
 						throw new PcapException("Failed to open uploaded file!");
 					} else {
-						PacketHandler packetHandler = new PacketHandler();
+						SimplePacketHandler packetHandler = new SimplePacketHandler();
 
 						pcap.loop(Pcap.LOOP_INFINITE, packetHandler, errbuf);
 
 						HttpSession session = request.getSession();
-						session.setAttribute(Commons.SESSION_PACKET_LIST,
-								packetHandler.getPackets());
-						session.setAttribute(
-								Commons.SESSION_SIMPLE_PACKET_LIST,
-								SimplePacketConverter.convert(packetHandler
-										.getPackets()));
+						session.setAttribute(Commons.SESSION_NODE_LIST,
+								packetHandler.getNodes());
 
-						session.setAttribute(
-								Commons.SESSION_TOTAL_PACKET_COUNT,
-								packetHandler.getPacketCount());
+						PacketInfoDTO packetInfo = new PacketInfoDTO(
+								packetHandler.getFirstPacketDate(),
+								packetHandler.getLastPacketDate(),
+								packetHandler.getTotalPacketCount(),
+								packetHandler.getTcpPacketCount(),
+								packetHandler.getNodeCount());
 
-						session.setAttribute(Commons.SESSION_FIRST_PACKET_TIME,
-								packetHandler.getFirstPacketDate().getTime());
-						session.setAttribute(Commons.SESSION_LAST_PACKET_TIME,
-								packetHandler.getLastPacketDate().getTime());
+						session.setAttribute(Commons.SESSION_PACKET_INFO,
+								packetInfo);
 
 						response = "Total packet count: "
-								+ packetHandler.getPacketCount();
+								+ packetHandler.getTotalPacketCount()
+								+ "\nNode count: "
+								+ packetHandler.getNodeCount()
+								+ "\nTCP packets: "
+								+ packetHandler.getTcpPacketCount();
 					}
 				} catch (Exception e) {
 					throw new UploadActionException(e);

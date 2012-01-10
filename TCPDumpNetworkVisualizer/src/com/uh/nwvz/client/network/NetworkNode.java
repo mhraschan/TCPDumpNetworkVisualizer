@@ -8,8 +8,8 @@ public class NetworkNode extends Node {
 	
 	private int packetsReceived = 0;
 	private int packetsSent = 0;
-	private int kByteReceived = 0;
-	private int kByteSent = 0;
+	private long kByteReceived = 0;
+	private long kByteSent = 0;
 
 	public NetworkNode(Vector center, double radius, String text, CssColor colorNormal, CssColor colorMouseOver, CssColor colorMouseDown) {
 		super(center, radius, text, colorNormal, colorMouseOver, colorMouseDown);
@@ -31,7 +31,7 @@ public class NetworkNode extends Node {
 		this.packetsSent = packetsSent;
 	}
 
-	public int getkByteReceived() {
+	public long getkByteReceived() {
 		return kByteReceived;
 	}
 
@@ -39,12 +39,20 @@ public class NetworkNode extends Node {
 		this.kByteReceived = kByteReceived;
 	}
 
-	public int getkByteSent() {
+	public long getkByteSent() {
 		return kByteSent;
 	}
 
 	public void setkByteSent(int kByteSent) {
 		this.kByteSent = kByteSent;
+	}
+	
+	public void addPacketReceived() {
+		this.packetsSent++;
+	}
+	
+	public void addkByteReceived(int kByteReceived) {
+		this.kByteReceived += kByteReceived;
 	}
 	
 }
