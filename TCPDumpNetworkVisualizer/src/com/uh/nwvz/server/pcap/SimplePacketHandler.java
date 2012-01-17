@@ -131,6 +131,7 @@ public class SimplePacketHandler implements PcapPacketHandler<StringBuilder> {
 						tcp.destination());
 
 				if (packet.hasHeader(http)) {
+					simplePacket.setType(SimplePacketType.HTTP);
 					SimpleHttpPacket httpPacket = new SimpleHttpPacket(
 							http.fieldValue(Http.Request.Referer),
 							http.contentType());
