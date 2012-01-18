@@ -4,8 +4,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{listings}
 \usepackage{hyperref}
-\usepackage{biblatex}
-\addbibresource{presentation.bib}
+%\usepackage{biblatex}
+%\addbibresource{presentation.bib}
 
 \title
 {Network Traffic Visualization}
@@ -39,10 +39,97 @@
 \end{frame}
 
 \section{Introduction}
+  
+\begin{frame}{Introduction}
+ \begin{enumerate}
+  \item Network traffic on a smartphone available as TCPDUMP
+  \item Visualization of content
+  \begin{enumerate}
+    \item Quick overview
+    \item Development over time
+    \item Access to different servers
+  \end{enumerate}
+  \item Goals
+  \begin{enumerate}
+    \item Find visualization tools
+    \item Parsing TCPDUMP
+    \item Intuitive visualization of data
+    \item Present information on a \textbf{webpage}
+  \end{enumerate}
+ \end{enumerate}
+\end{frame}
+
+\begin{frame}{Ideas}
+ \begin{enumerate}
+  \item Use HTML5 on client for visualization
+  \item Everything should work smooth
+  \item Show packet transfers
+  \item Reload packets on demand
+  \item Make it responsive
+  \item Show how the graph evolves in a timeline
+  \item Further traffic details for each node (protocols, ...)
+  \item Color coding for used protocols
+ \end{enumerate}
+\end{frame}
 
 \section{Existing Frameworks}
 
+\begin{frame}{Frameworks for parsing TCPDUMP files }
+  \begin{enumerate}
+   \item JNetPcap 
+      \begin{enumerate}
+	\item Open-Source Java library based on pcap
+	\item Supports parsing of TCPDUMP files
+      \end{enumerate}  
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Frameworks for Graph Visualization}
+
+  \begin{enumerate}
+    \item Gephi
+      \begin{enumerate}
+	\item Open-Source software
+	\item Allows developers to create plugins, e.g. Gephi HTTP Plugin
+      \end{enumerate}
+    \item JavaScript InfoVis Toolkit
+      \begin{enumerate}
+	\item Open-Source JavaScript library, based on HTML5
+	\item Many different types of graphs and charts
+      \end{enumerate}
+    \item Java Universal Network/Graph Framework
+      \begin{enumerate}
+	\item Open-Source Java library
+	\item Powerful, also including different types of graphs
+	\item May only be used in an applet
+      \end{enumerate}
+    \item Google Chart Tools
+      \begin{enumerate}
+	\item Easy to use together with GWT
+	\item Insufficient for graph visualization
+      \end{enumerate}
+     \item Other ``dead'' graph visualization project for GWT
+ \end{enumerate}
+\end{frame}
+
 \section{Implemented System}
+
+\begin{frame}{Implemented System}
+ \begin{enumerate}
+  \item Using Java on server side, e.g. using Apache Tomcat
+  \item Parsing TCPDUMP using JNetPcap
+  \item No messy JavaScript for client
+  \begin{enumerate}
+    \item Using GWT as an alternative
+    \item Java code is converted into JavaScript
+    \item But: no existing visualization frameworks
+  \end{enumerate}
+  \item Own implementation of graphs in HTML5
+  \item Porting JavaScript InfoVis Toolkit too much work
+ \end{enumerate}
+\end{frame}
+
 
 \section{Problems}
 
@@ -58,15 +145,7 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}{Ideas}
- \begin{enumerate}
-  \item Everything should work smooth
-  \item Show packet transfers
-  \item Reload packets on demand
-  \item Make it responsive
-  \item Show everything in a timeline
- \end{enumerate}
-\end{frame}
+
 
 \subsection{Problems The 1st}
 
@@ -76,7 +155,7 @@
   \item Javascript...
   \begin{enumerate}
    \item Single threaded
-   \item When something ``is done'', user cannot interact
+   \item When something ``is being done'', user cannot interact
    \item Packet transfer (AJAX) pauses everything...
   \end{enumerate}
   \item So we couldnt simulate something AND be responsive
@@ -123,9 +202,9 @@
 
 \section{Referenzen}
 
-\begin{frame}{References}
-\printbibliography
-\end{frame}
+%\begin{frame}{References}
+%\printbibliography
+%\end{frame}
 
 
 \end{document}
