@@ -63,27 +63,18 @@
  \begin{enumerate}
   \item Use HTML5 on client for visualization
   \item Everything should work smooth
+  \item The application should stay responsive at any time
   \item Show packet transfers
   \item Reload packets on demand
-  \item Make it responsive
   \item Show how the graph evolves in a timeline
   \item Further traffic details for each node (protocols, ...)
   \item Color coding for used protocols
+  \item Size of displayed network nodes should reflect transfer
+  \item Zooming into the graph 
  \end{enumerate}
 \end{frame}
 
 \section{Existing Frameworks}
-
-\begin{frame}{Frameworks for parsing TCPDUMP files }
-  \begin{enumerate}
-   \item JNetPcap 
-      \begin{enumerate}
-	\item Open-Source Java library based on pcap
-	\item Supports parsing of TCPDUMP files
-      \end{enumerate}  
-  \end{enumerate}
-\end{frame}
-
 
 \begin{frame}{Frameworks for Graph Visualization}
 
@@ -97,6 +88,7 @@
       \begin{enumerate}
 	\item Open-Source JavaScript library, based on HTML5
 	\item Many different types of graphs and charts
+	\item Has built-in event listeners and zooming function
       \end{enumerate}
     \item Java Universal Network/Graph Framework
       \begin{enumerate}
@@ -109,8 +101,18 @@
 	\item Easy to use together with GWT
 	\item Insufficient for graph visualization
       \end{enumerate}
-     \item Other ``dead'' graph visualization project for GWT
+     \item Other ``dead'' graph visualization projects for GWT
  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Frameworks for parsing TCPDUMP files }
+  \begin{enumerate}
+   \item JNetPcap 
+      \begin{enumerate}
+	\item Open-Source Java library based on libpcap
+	\item Supports parsing of TCPDUMP files
+      \end{enumerate}  
+  \end{enumerate}
 \end{frame}
 
 \section{Implemented System}
@@ -124,9 +126,18 @@
     \item Using GWT as an alternative
     \item Java code is converted into JavaScript
     \item But: no existing visualization frameworks
+    \item Idea: Wrapping JavaScript InfoVis Toolkit for GWT
+    \begin{enumerate}
+      \item Wrapper not very complicated
+      \item Not very nice code (building JSON objects,...)
+      \item Still a lot of effort
+    \end{enumerate}
   \end{enumerate}
   \item Own implementation of graphs in HTML5
-  \item Porting JavaScript InfoVis Toolkit too much work
+        \begin{enumerate}
+	  \item Supporting different layout mechanisms
+	  \item Object-oriented drawing
+	\end{enumerate}
  \end{enumerate}
 \end{frame}
 
