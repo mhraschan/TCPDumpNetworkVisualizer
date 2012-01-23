@@ -46,7 +46,7 @@ public class NetworkNodeFactory {
 	
 	public NetworkNode createHomeNode() {
 		Vector center = new Vector((int) canvasSize.getWidth()/2, (int) canvasSize.getHeight()/2);
-		return new NetworkNode(center, 30, "home", ColorProvider.getNormalColor(Protocol.LOCALHOST), 
+		return new NetworkNode(center, 30, "home", "home", ColorProvider.getNormalColor(Protocol.LOCALHOST), 
 				ColorProvider.getMouseOverColor(Protocol.LOCALHOST), ColorProvider.getClickColor(Protocol.LOCALHOST));
 	}
 	
@@ -60,33 +60,33 @@ public class NetworkNodeFactory {
 		return center;
 	}
 	
-	public NetworkNode createHTTPNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.HTTP), 
+	public NetworkNode createHTTPNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.HTTP), 
 				ColorProvider.getMouseOverColor(Protocol.HTTP), ColorProvider.getClickColor(Protocol.HTTP));
 	}
 	
-	public NetworkNode createMixedNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.MIXED), 
+	public NetworkNode createMixedNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.MIXED), 
 				ColorProvider.getMouseOverColor(Protocol.MIXED), ColorProvider.getClickColor(Protocol.MIXED));
 	}
 	
-	public NetworkNode createOtherNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.OTHER), 
+	public NetworkNode createOtherNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.OTHER), 
 				ColorProvider.getMouseOverColor(Protocol.OTHER), ColorProvider.getClickColor(Protocol.OTHER));
 	}
 	
-	public NetworkNode createTCPNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.TCP), 
+	public NetworkNode createTCPNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.TCP), 
 				ColorProvider.getMouseOverColor(Protocol.TCP), ColorProvider.getClickColor(Protocol.TCP));
 	}
 	
-	public NetworkNode createUDPNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.UDP), 
+	public NetworkNode createUDPNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.UDP), 
 				ColorProvider.getMouseOverColor(Protocol.UDP), ColorProvider.getClickColor(Protocol.UDP));
 	}
 	
-	public NetworkNode createICMPNode(String name) {
-		return new NetworkNode(getCenterPosition(), 20, name, ColorProvider.getNormalColor(Protocol.ICMP), 
+	public NetworkNode createICMPNode(String name, String hostname) {
+		return new NetworkNode(getCenterPosition(), 20, name, hostname, ColorProvider.getNormalColor(Protocol.ICMP), 
 				ColorProvider.getMouseOverColor(Protocol.ICMP), ColorProvider.getClickColor(Protocol.ICMP));
 	}
 
