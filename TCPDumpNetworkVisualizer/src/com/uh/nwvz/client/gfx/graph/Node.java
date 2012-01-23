@@ -48,6 +48,14 @@ public class Node implements IGfxObject {
 		mgr.addMouseOverListener(this);
 	}
 	
+	@Override
+	public void unregisterEventListeners() {
+		CanvasEventManager mgr = CanvasEventManager.getCanvasEventManager();
+		mgr.removeMouseDownListener(this);
+		mgr.removeMouseUpListener(this);
+		mgr.removeMouseOverListener(this);
+	}
+	
 
 	
 	public List<Association> getAssociations() {

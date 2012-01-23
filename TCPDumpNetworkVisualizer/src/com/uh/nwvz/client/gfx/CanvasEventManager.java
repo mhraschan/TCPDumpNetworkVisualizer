@@ -41,6 +41,18 @@ public class CanvasEventManager implements MouseMoveHandler, MouseDownHandler, M
 		}
 	}
 	
+	public void removeMouseDownListener(IGfxObject gfxObject) {
+		this.mouseDownListeners.remove(gfxObject);
+	}
+	
+	public void removeMouseUpListener(IGfxObject gfxObject) {
+		this.mouseUpListeners.remove(gfxObject);
+	}
+	
+	public void removeMouseOverListener(IGfxObject gfxObject) {
+		this.mouseOverListeners.remove(gfxObject);
+	}
+	
 	public void addMouseDownListener(IGfxObject gfxObject) {
 		this.mouseDownListeners.add(gfxObject);		
 	}

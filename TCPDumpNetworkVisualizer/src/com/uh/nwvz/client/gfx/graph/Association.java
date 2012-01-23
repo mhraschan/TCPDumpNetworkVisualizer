@@ -22,6 +22,12 @@ public class Association implements IGfxObject {
 		CanvasEventManager mgr = CanvasEventManager.getCanvasEventManager();
 		mgr.addMouseOverListener(this);
 	}
+	
+	@Override
+	public void unregisterEventListeners() {
+		CanvasEventManager mgr = CanvasEventManager.getCanvasEventManager();
+		mgr.addMouseOverListener(this);
+	}
 
 	
 	

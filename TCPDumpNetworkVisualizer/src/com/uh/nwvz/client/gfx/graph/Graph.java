@@ -37,6 +37,11 @@ public class Graph {
 	}
 	
 	public void reset() {
+		for (Node n : this.nodes)
+			n.unregisterEventListeners();
+		for (Association a : this.associations)
+			a.unregisterEventListeners();
+		
 		nodes.clear();
 		associations.clear();
 	}

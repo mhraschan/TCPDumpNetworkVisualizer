@@ -17,4 +17,6 @@ public interface IGfxObject {
 	void onMouseDown();
 	
 	void onMouseUp();
+	
+	void unregisterEventListeners();
 }
