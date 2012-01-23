@@ -55,6 +55,8 @@ public class GraphBuilder implements MouseClickHandler {
 		NetworkNodeFactory factory = NetworkNodeFactory.getNetworkNodeFactory();
 		
 		String nodeName = PcapUtil.ip(node.getIp());
+		String hostname = (node.getReceivedPackets().size() > 0) ? node
+				.getReceivedPackets().get(0).getDestHostname() : "";
 		
 		EnumSet<Protocol> protocols = EnumSet.noneOf(Protocol.class);
 		
@@ -80,23 +82,23 @@ public class GraphBuilder implements MouseClickHandler {
 				switch(protocols.iterator().next()) 
 				{
 				case HTTP:
-					netNode = factory.createHTTPNode(nodeName);
+					netNode = factory.createHTTPNode(nodeName, hostname);
 					break;
 				case UDP:
-					netNode = factory.createUDPNode(nodeName);
+					netNode = factory.createUDPNode(nodeName, hostname);
 					break;
 				case TCP:
-					netNode = factory.createTCPNode(nodeName);
+					netNode = factory.createTCPNode(nodeName, hostname);
 					break;
 				case ICMP:
-					netNode = factory.createICMPNode(nodeName);
+					netNode = factory.createICMPNode(nodeName, hostname);
 					break;
 				case OTHER:
 				default:
-					netNode = factory.createOtherNode(nodeName);
+					netNode = factory.createOtherNode(nodeName, hostname);
 				}
 			} else {
-				netNode = factory.createMixedNode(nodeName);
+				netNode = factory.createMixedNode(nodeName, hostname);
 			}
 			
 			Association assoc = new Association(homeNode, netNode);
@@ -166,9 +168,11 @@ public class GraphBuilder implements MouseClickHandler {
 			for (Protocol p : networkNode.getProtocols()) {
 				protocolString += p.toString() + " ";
 			}
-			popup.setData(networkNode.getText(), networkNode.getPacketsSent(),
+			popup.setData(networkNode.getText(), networkNode.getHostname(),
+					networkNode.getPacketsSent(),
 					networkNode.getPacketsReceived(),
-					networkNode.getkByteSent(), networkNode.getkByteReceived(), protocolString);
+					networkNode.getkByteSent(), networkNode.getkByteReceived(),
+					protocolString);
 			popup.show();
 		}
 	}
