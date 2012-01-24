@@ -4,8 +4,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{listings}
 \usepackage{hyperref}
-%\usepackage{biblatex}
-%\addbibresource{presentation.bib}
+\usepackage{biblatex}
+\bibliography{presentation.bib}
 
 \title
 {Network Traffic Visualization}
@@ -42,7 +42,7 @@
   
 \begin{frame}{Introduction}
  \begin{enumerate}
-  \item Network traffic on a smartphone available as TCPDUMP
+  \item Network traffic on a smartphone available as TCPDUMP 
   \item Visualization of content
   \begin{enumerate}
     \item Quick overview
@@ -52,7 +52,7 @@
   \item Goals
   \begin{enumerate}
     \item Find visualization tools
-    \item Parsing TCPDUMP
+    \item Parsing TCPDUMP \cite{TCPDUMP}
     \item Intuitive visualization of data
     \item Present information on a \textbf{webpage}
   \end{enumerate}
@@ -79,26 +79,26 @@
 \begin{frame}{Frameworks for Graph Visualization}
 
   \begin{enumerate}
-    \item Gephi
+    \item Gephi \cite{Gephi}
       \begin{enumerate}
 	\item Open-Source software
 	\item Allows developers to create plugins, e.g. Gephi HTTP Plugin
       \end{enumerate}
-    \item JavaScript InfoVis Toolkit
+    \item JavaScript InfoVis Toolkit \cite{INVOVIS}
       \begin{enumerate}
 	\item Open-Source JavaScript library, based on HTML5
 	\item Many different types of graphs and charts
 	\item Has built-in event listeners and zooming function
       \end{enumerate}
-    \item Java Universal Network/Graph Framework
+    \item Java Universal Network/Graph Framework \cite{JUNG}
       \begin{enumerate}
 	\item Open-Source Java library
 	\item Powerful, also including different types of graphs
 	\item May only be used in an applet
       \end{enumerate}
-    \item Google Chart Tools
+    \item Google Chart Tools \cite{GoogleChart}
       \begin{enumerate}
-	\item Easy to use together with GWT
+	\item Easy to use together with GWT \cite{GWT}
 	\item Insufficient for graph visualization
       \end{enumerate}
      \item Other ``dead'' graph visualization projects for GWT
@@ -107,7 +107,7 @@
 
 \begin{frame}{Frameworks for parsing TCPDUMP files }
   \begin{enumerate}
-   \item JNetPcap 
+   \item JNetPcap \cite{JNETPCAP}
       \begin{enumerate}
 	\item Open-Source Java library based on libpcap
 	\item Listening to traffic on network interface
@@ -120,7 +120,7 @@
 
 \begin{frame}{Implemented System}
  \begin{enumerate}
-  \item Using Java on server side, e.g. using Apache Tomcat
+  \item Using Java on server side, e.g. using Apache Tomcat \cite{Tomcat}
   \item Parsing TCPDUMP using JNetPcap
   \item No messy JavaScript for client
   \begin{enumerate}
@@ -211,6 +211,7 @@
  \item Use GWT for client-side javascript generation (Java is much better to maintain than JS)
  \item Write (or wait for) a GWT-InfoVis wrapper (offers features which are hard to implement)
 \end{enumerate}
+\end{frame}
 
 
 \begin{frame}
@@ -220,9 +221,9 @@
 
 \section{Referenzen}
 
-%\begin{frame}{References}
-%\printbibliography
-%\end{frame}
+\begin{frame}{References}
+\printbibliography
+\end{frame}
 
 
 \end{document}

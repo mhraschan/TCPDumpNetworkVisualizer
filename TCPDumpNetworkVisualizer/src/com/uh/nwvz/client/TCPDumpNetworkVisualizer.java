@@ -1,5 +1,7 @@
 package com.uh.nwvz.client;
 
+import java.sql.Date;
+
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.UploadedInfo;
@@ -8,6 +10,7 @@ import gwtupload.client.MultiUploader;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -26,6 +29,7 @@ import com.uh.nwvz.client.gfx.commons.Size;
 import com.uh.nwvz.client.network.GraphBuilder;
 import com.uh.nwvz.client.network.NetworkNodeFactory;
 import com.uh.nwvz.client.network.PacketManager;
+import com.uh.nwvz.shared.dto.PacketInfoDTO;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -38,6 +42,7 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 	private LogTextArea rtLog = new LogTextArea();
 	private TimeSlider timeAxisSlider = new TimeSlider(100, "1000px");
 	private TextBox tbClientIp = new TextBox();
+	private Label lbTime = new Label();
 	
 	final DialogBox errorBox = new DialogBox();
 
@@ -102,13 +107,23 @@ public class TCPDumpNetworkVisualizer implements EntryPoint,
 				} else {
 					packetManager.setClientIpAddress(tbClientIp.getText());
 					packetManager.setTime(event.getValue());
+					PacketInfoDTO packetInfo = packetManager.getPacketInfo();
+					if (packetInfo != null) {
+						long totalTime = packetInfo.getLastPacketArrival() - packetInfo.getFirstPacketArrival();
+						long currentTime = (long) ((totalTime * event.getValue()) / 100);
+						DateTimeFormat format = DateTimeFormat.getFormat("mm:ss.SSS");
+						lbTime.setText("Time: " + format.format(new Date(currentTime)));
+					}
 				}
 			}
 
 		});
+		
+		lbTime.setText("Time: 0:00");
 
 		RootPanel.get("graph_canvas").add(cvGraph);
 		RootPanel.get("slider").add(timeAxisSlider);
+		RootPanel.get("slider").add(lbTime);
 
 		final Timer timer = new Timer() {
 			@Override
